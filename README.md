@@ -1,0 +1,2 @@
+# django_tutorial
+https://docs.djangoproject.com/ja/3.1/intro/tutorial01/
