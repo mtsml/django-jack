@@ -11,11 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-import configparser
 
-# Read config file
-config_ini = configparser.ConfigParser()
-config_ini.read('.config.ini', encoding='utf-8')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -27,10 +23,8 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '7i54guo(4b&f4ny=+-!o#4h8@dva&frsc%93yyu00*pi5jlm_9'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -79,16 +73,16 @@ WSGI_APPLICATION = 'django-jack.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config_ini['DEFAULT']['DB_NAME'],
-        'USER': config_ini['DEFAULT']['DB_USER'],
-        'PASSWORD': config_ini['DEFAULT']['DB_PASSWORD'],
-        'HOST': config_ini['DEFAULT']['DB_HOST'],
-        'PORT': config_ini['DEFAULT']['DB_PORT'],
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': config_ini['DEFAULT']['DB_NAME'],
+#         'USER': config_ini['DEFAULT']['DB_USER'],
+#         'PASSWORD': config_ini['DEFAULT']['DB_PASSWORD'],
+#         'HOST': config_ini['DEFAULT']['DB_HOST'],
+#         'PORT': config_ini['DEFAULT']['DB_PORT'],
+#     }
+# }
 
 
 # Password validation
@@ -128,3 +122,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+DEBUG = False
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
+
+if not DEBUG:
+    import django_heroku
+    django_heroku.settings(locals())
