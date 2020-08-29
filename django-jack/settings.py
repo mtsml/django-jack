@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import configparser
+
+# Read config file
+config_ini = configparser.ConfigParser()
+config_ini.read('.config.ini', encoding='utf-8')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -76,8 +81,12 @@ WSGI_APPLICATION = 'django-jack.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config_ini['DEFAULT']['DB_NAME'],
+        'USER': config_ini['DEFAULT']['DB_USER'],
+        'PASSWORD': config_ini['DEFAULT']['DB_PASSWORD'],
+        'HOST': config_ini['DEFAULT']['DB_HOST'],
+        'PORT': config_ini['DEFAULT']['DB_PORT'],
     }
 }
 
