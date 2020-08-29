@@ -1,5 +1,8 @@
 # django-jack
 
+## materへのmerge方法
+プルリク出す→コードオーナーが承認する→マージされる
+
 ## Herokuへのデプロイ
 [こちら](https://qiita.com/okoppe8/items/76cdb202eb15aab566d1)を参考
 
