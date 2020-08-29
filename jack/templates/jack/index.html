@@ -7,7 +7,17 @@
 </head>
 <body>
     {% if channel_list %}
-        <p>Recomended Youtubers!</p>
+        <p>オススメYoutuber</p>
+    {% else %}
+        <p>No Recomended Youtuber.</p>
+    {% endif %}
+        <form action="{% url 'add_channel' %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="channel_id">
+            <input type="text" name="channel_nm">
+            <input type="submit" value="追加">
+        </form>
+    {% if channel_list %}
         <ul>
         {% for channel in channel_list %}
             <li>
@@ -17,8 +27,6 @@
             </li>
         {% endfor %}
         </ul>
-    {% else %}
-        <p>No Recomended Youtuber.</p>
     {% endif %}
 </body>
 </html>
