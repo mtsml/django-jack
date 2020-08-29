@@ -1,36 +1,29 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youtuber List</title>
-</head>
-<body>
-    {% if channel_list %}
-        <p>オススメYoutuber</p>
-    {% else %}
-        <p>No Recomended Youtuber.</p>
-    {% endif %}
+{% extends 'jack/base.html' %}
+{% block content %}
+  {% if channel_list %}
+      <p>オススメYoutuber</p>
+  {% else %}
+      <p>No Recomended Youtuber.</p>
+  {% endif %}
 
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">追加</button>
-        </form>
-        {% if message %}
-            <p>{{ message }}</p>
-        {% endif %}
+      <form method="POST">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit">追加</button>
+      </form>
+      {% if message %}
+          <p>{{ message }}</p>
+      {% endif %}
 
-    {% if channel_list %}
-        <ul>
-        {% for channel in channel_list %}
-            <li>
-                <a href="https://www.youtube.com/user/{{ channel.channel_id }}/" target="_blank">
-                    {{ channel.channel_nm }}
-                </a>
-            </li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-</body>
-</html>
+  {% if channel_list %}
+    <ul>
+      {% for channel in channel_list %}
+          <li>
+              <a href="https://www.youtube.com/user/{{ channel.channel_id }}/" target="_blank">
+                  {{ channel.channel_nm }}
+              </a>
+          </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}
