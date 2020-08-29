@@ -11,11 +11,16 @@
     {% else %}
         <p>No Recomended Youtuber.</p>
     {% endif %}
+
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">追加</button>
         </form>
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+
     {% if channel_list %}
         <ul>
         {% for channel in channel_list %}
