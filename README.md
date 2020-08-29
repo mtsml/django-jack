@@ -1,28 +1,26 @@
 # django-jack
 
-## materへのmerge方法
-プルリク出す→コードオーナーが承認する→マージされる
+## 本番環境
+https://django-jack.herokuapp.com/
 
-## Herokuへのデプロイ
-[こちら](https://qiita.com/okoppe8/items/76cdb202eb15aab566d1)を参考
-
-`dj-database-url`により特別な設定を行わず**Heorku Postgres**を使用することができる
-
-APサーバーは`Gunicorn`
-
-`django-heroku`のインストールが`psycopg2`のせいでコケるので、依存パッケージを省く`--no-deps`オプションを付与してインストールする
+## 環境構築
 ```bash
-$ pip install --no-deps django-heroku
+$ git clone https://github.com/mtsml/django-jack.git
 ```
-依存パッケージは別途インストールする（`psycopg2`はかわりに`psycopg2-binary`を入れる）
-
-## DBをPotgresqlに変更する
-
 ```bash
-$ pip install psycopg2-binary
+$ pip install -r requirements.txt
 ```
+```bash
+$ python manage.py runserver
+```
+多分これで動く
 
-[こちら](https://qiita.com/shigechioyo/items/9b5a03ceead6e5ec87ec)を少しだけ参考にした
+## 開発手順
+1. issue切る
+2. branch切る
+3. 修正する
+4. プルリク出す
+5. 承認されたらマージされる
 
-## チュートリアル
-https://docs.djangoproject.com/ja/3.1/intro/tutorial01/
+## デプロイ
+masterブランチに変更があった場合ぶ自動的にHerokuへデプロイされる
