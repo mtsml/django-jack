@@ -4,15 +4,42 @@
 https://django-jack.herokuapp.com/
 
 ## 環境構築
+クローンする
 ```bash
 $ git clone https://github.com/mtsml/django-jack.git
+$ cd django-jack
 ```
+
+必要なパッケージをインストールする
 ```bash
 $ pip install -r requirements.txt
 ```
+
+開発環境で使う設定ファイルを作成する
+```bash
+$ echo """import os
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
+DEBUG = True""" > django-jack/local_settings.py
+```
+
+マイグレーションする
+```bash
+$ python manage.py migrate
+```
+
+開発サーバーを起動する
 ```bash
 $ python manage.py runserver
 ```
+
 多分これで動く
 
 ## 開発手順
@@ -23,4 +50,4 @@ $ python manage.py runserver
 5. 承認されたらマージされる
 
 ## デプロイ
-masterブランチに変更があった場合ぶ自動的にHerokuへデプロイされる
+masterブランチに変更があった場合に自動的にHerokuへデプロイされる
