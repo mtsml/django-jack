@@ -19,7 +19,7 @@
     <ul>
       {% for channel in channel_list %}
           <li>
-              <a href="https://www.youtube.com/user/{{ channel.channel_id }}/" target="_blank">
+              <a href="{% url 'detail' channel.channel_id %}">
                   {{ channel.channel_nm }}
               </a>
           </li>

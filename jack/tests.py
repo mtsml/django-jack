@@ -46,3 +46,24 @@ class IndexViewTests(TestCase):
         response = self.client.post('/', {'channel_id': channel_id, 'channel_nm': '東海オンエアじゃない'})
         self.assertContains(response, 'そのチャンネルIDは存在しません')
         self.assertQuerysetEqual(response.context['channel_list'], [])
+
+
+class DetailViewTests(TestCase):
+    def test_no_channel(self):
+        """
+        テーブルにチャンネルが存在しない場合は、404エラー
+        """
+        response = self.client.get('/TokaiOnAirJanai/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_display_channel(self):
+        """
+        テーブルにチャンネルが存在する場合は、チャンネルの詳細が表示される
+        """
+        channel_id = 'TokaiOnAir'
+        channel = Channel.objects.create(channel_id=channel_id, channel_nm='東海オンエア')
+        response = self.client.get(f'/{channel_id}/')
+        self.assertQuerysetEqual(
+            [response.context['channel']], 
+            [f'<Channel: {channel_id}>']
+        )
