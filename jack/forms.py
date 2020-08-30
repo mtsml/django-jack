@@ -1,7 +1,7 @@
 from django import forms
 import urllib3
 
-from .models import Channel, Video
+from .models import Channel, Comment, Video
 
 
 VIDEO_URL_PREFIX = 'https://www.youtube.com/watch?v='
@@ -53,3 +53,7 @@ class VideoForm(forms.Form):
             return True
         else:
             return False
+
+
+class CommentForm(forms.Form):
+    comment = forms.CharField(max_length=2000)
