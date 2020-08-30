@@ -10,6 +10,12 @@ $ git clone https://github.com/mtsml/django-jack.git
 $ cd django-jack
 ```
 
+ローカルで不要なパッケージを削除する
+```bash
+$ cat requirements.txt | (rm requirements.txt; sed '/^django-heroku/d' > requirements.txt)
+```
+※OSXのPOSIX sedで動作させるために冗長な記述になっている
+
 必要なパッケージをインストールする
 ```bash
 $ pip install -r requirements.txt
@@ -46,8 +52,8 @@ $ python manage.py runserver
 1. issue切る
 2. branch切る
 3. 修正する
-4. プルリク出す
-5. 承認されたらマージされる
+4. プルリク出す（見てもらいたい場合は承認者を指定する）
+5. マージするorされる
 
 ## デプロイ
 masterブランチに変更があった場合に自動的にHerokuへデプロイされる
