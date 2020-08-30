@@ -6,15 +6,19 @@ from .models import Channel, Video
 from .forms import ChannelForm, VideoForm, get_video_id_from_url
 
 
+MSG_INVALID_CHANNEL_ID = 'そのチャンネルIDは存在しません'
+MSG_INVALID_VIDEO_URL = 'そのURLは存在しません'
+
+
 def index(request):
     message=None # TODO:messageの処理はもっといい方法があるはず
     if request.method == 'POST':
         form = ChannelForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('index'))
+            return redirect('index')
         else:
-            message = 'そのチャンネルIDは存在しません'
+            message = MSG_INVALID_CHANNEL_ID
     form = ChannelForm()
     channel_list = Channel.objects.all()
     context = {'form': form, 'channel_list': channel_list, 'message': message}    
@@ -31,7 +35,7 @@ def detail(request, channel_id):
             channel.video_set.create(video_id=video_id)
             return redirect('detail', channel_id=channel_id)
         else:
-            message = 'そのURLは存在しません'
+            message = MSG_INVALID_VIDEO_URL
     form = VideoForm()
     video_list = channel.video_set.all()
     context = {'form': form, 'channel': channel, 'video_list': video_list, 'message': message}
