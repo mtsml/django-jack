@@ -5,6 +5,25 @@
             {{ channel.channel_nm }}
         </a>
     </p>
-    ここに動画を表示したいけどパッケージの追加が必要なので保留している<br/>
-    追加しても良い？
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">追加</button>
+    </form>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+
+    {% if video_list %}
+        <ul>
+            {% for video in video_list %}
+                <li>
+                    <a href="https://www.youtube.com/watch?v={{ video.video_id }}" target="_blank">
+                        https://www.youtube.com/watch?v={{ video.video_id }}
+                    </a>
+                </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}
