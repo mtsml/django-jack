@@ -1,65 +1,68 @@
 {% extends 'jack/base.html' %}
 {% block content %}
-    <h1>
-        <a href="https://www.youtube.com/user/{{ channel.channel_id }}/" target="_blank">
-            {{ channel.channel_nm }}
-        </a>
-    </h1>
+    <div class="ui container">
+        <h1>
+            <a href="https://www.youtube.com/user/{{ channel.channel_id }}/" target="_blank">
+                {{ channel.channel_nm }}
+            </a>
+        </h1>
+        <div class="ui divider"></div>
+    </div>
 
-    <h2>
-        コメント        
-    </h2>
-    <form action="{% url 'comment' 'channel' channel.channel_id %}" method="POST">
-        {% csrf_token %}
-        {{ comment_form.as_p }}
-        <button type="submit">追加</button>
-    </form>                    
+    <div class="ui container">
+        <div class="ui two column stackable grid">
+            <div class="ui column">
+                <h2>
+                    コメント        
+                </h2>
+                <form class="ui form" action="{% url 'comment' 'channel' channel.channel_id %}" method="POST">
+                    {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <button class="ui button" type="submit">追加</button>
+                </form>
+                {% for comment in channel.get_comment_list %}
+                    <div class="ui message">
+                        {{ comment.comment }}
+                    </div>
+                {% endfor %}
+                <div class="ui divider"></div>
+            </div>
 
-    {% if channel.get_comment_list %}
-        <ul>
-            {% for comment in channel.get_comment_list %}
-                <li>
-                    {{ comment.comment }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+            <div class="ui column">
+                <h2>
+                    おすすめ動画
+                </h2>
+                <form class="ui form" method="POST">
+                    {% csrf_token %}
+                    {{ video_form.as_p }}
+                    <button class="ui button" type="submit">追加</button>
+                </form>
+                {% if message %}
+                    <p class="ui error message">{{ message }}</p>
+                {% endif %}
 
-    <h2>
-        おすすめ動画
-    </h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ video_form.as_p }}
-        <button type="submit">追加</button>
-    </form>
-    {% if message %}
-        <p>{{ message }}</p>
-    {% endif %}
-
-    {% if video_list %}
-        <ul>
-            {% for video in video_list %}
-                <li>
-                    <a href="https://www.youtube.com/watch?v={{ video.video_id }}" target="_blank">
-                        https://www.youtube.com/watch?v={{ video.video_id }}
-                    </a>
-                    <form action="{% url 'comment' 'video' video.video_id %}" method="POST">
-                        {% csrf_token %}
-                        {{ comment_form.as_p }}
-                        <button type="submit">追加</button>
-                    </form>
-                    {% if video.get_comment_list %}
-                        <ul>
+                {% if video_list %}
+                    {% for video in video_list %}
+                        <div class="ui segment">
+                            <h2>
+                                <a href="https://www.youtube.com/watch?v={{ video.video_id }}" target="_blank">
+                                    https://www.youtube.com/watch?v={{ video.video_id }}
+                                </a>
+                            </h2>
+                            <form class="ui form" action="{% url 'comment' 'video' video.video_id %}" method="POST">
+                                {% csrf_token %}
+                                {{ comment_form.as_p }}
+                                <button class="ui button" type="submit">追加</button>
+                            </form>
                             {% for comment in video.get_comment_list %}
-                                <li>
+                                <div class="ui message">
                                     {{ comment.comment }}
-                                </li>
+                                </div>
                             {% endfor %}
-                        </ul>
-                    {% endif %}
-                </li>
-        {% endfor %}
-        </ul>
-    {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

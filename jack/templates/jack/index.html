@@ -1,29 +1,32 @@
 {% extends 'jack/base.html' %}
 {% block content %}
-  {% if channel_list %}
-      <p>オススメYoutuber</p>
-  {% else %}
-      <p>No Recomended Youtuber.</p>
-  {% endif %}
+    <div class="ui container">
+        <div class="ui two column stackable grid">
+            <div class="ui column">
+                <form class="ui form" method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="ui button" type="submit">追加</button>
+                </form>
+                {% if message %}
+                    <p>{{ message }}</p>
+                {% endif %}
+            </div>
 
-      <form method="POST">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit">追加</button>
-      </form>
-      {% if message %}
-          <p>{{ message }}</p>
-      {% endif %}
-
-  {% if channel_list %}
-    <ul>
-      {% for channel in channel_list %}
-          <li>
-              <a href="{% url 'detail' channel.channel_id %}">
-                  {{ channel.channel_nm }}
-              </a>
-          </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+            <div class="ui column">
+                {% if channel_list %}        
+                    {% for channel in channel_list %}
+                        <h2>
+                            <a href="{% url 'detail' channel.channel_id %}">
+                                {{ channel.channel_nm }}
+                            </a>
+                        </h2>
+                        <div class="ui divider"></div>
+                    {% endfor %}
+                {% else %}
+                    <p class="ui message">No Recomended Youtuber.</p>
+                {% endif %}    
+            </div>
+        </div>
+    </div>
 {% endblock %}
