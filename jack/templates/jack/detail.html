@@ -1,0 +1,10 @@
+{% extends 'jack/base.html' %}
+{% block content %}
+    <p>
+        <a href="https://www.youtube.com/user/{{ channel.channel_id }}/" target="_blank">
+            {{ channel.channel_nm }}
+        </a>
+    </p>
+    ここに動画を表示したいけどパッケージの追加が必要なので保留している<br/>
+    追加しても良い？
+{% endblock %}
