@@ -7,6 +7,9 @@ class Channel(models.Model):
 
     def __str__(self):
         return self.channel_id
+    
+    def get_comment_list(self):
+        return Comment.objects.filter(category='channel', foreign_id=self.channel_id).order_by('-reg_datetime')
 
 
 class Video(models.Model):
@@ -15,3 +18,16 @@ class Video(models.Model):
 
     def __str__(self):
         return self.video_id
+
+    def get_comment_list(self):
+        return Comment.objects.filter(category='video', foreign_id=self.video_id).order_by('-reg_datetime')
+
+
+class Comment(models.Model):
+    category = models.CharField(max_length=200)
+    foreign_id = models.CharField(max_length=200)
+    comment = models.CharField(max_length=1000)
+    reg_datetime = models.DateTimeField()
+
+    def __str__(self):
+        return f'{self.category}:{self.foreign_id}'

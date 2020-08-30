@@ -1,14 +1,36 @@
 {% extends 'jack/base.html' %}
 {% block content %}
-    <p>
+    <h1>
         <a href="https://www.youtube.com/user/{{ channel.channel_id }}/" target="_blank">
             {{ channel.channel_nm }}
         </a>
-    </p>
+    </h1>
 
+    <h2>
+        コメント        
+    </h2>
+    <form action="{% url 'comment' 'channel' channel.channel_id %}" method="POST">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit">追加</button>
+    </form>                    
+
+    {% if channel.get_comment_list %}
+        <ul>
+            {% for comment in channel.get_comment_list %}
+                <li>
+                    {{ comment.comment }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>
+        おすすめ動画
+    </h2>
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ video_form.as_p }}
         <button type="submit">追加</button>
     </form>
     {% if message %}
@@ -22,6 +44,20 @@
                     <a href="https://www.youtube.com/watch?v={{ video.video_id }}" target="_blank">
                         https://www.youtube.com/watch?v={{ video.video_id }}
                     </a>
+                    <form action="{% url 'comment' 'video' video.video_id %}" method="POST">
+                        {% csrf_token %}
+                        {{ comment_form.as_p }}
+                        <button type="submit">追加</button>
+                    </form>
+                    {% if video.get_comment_list %}
+                        <ul>
+                            {% for comment in video.get_comment_list %}
+                                <li>
+                                    {{ comment.comment }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </li>
         {% endfor %}
         </ul>

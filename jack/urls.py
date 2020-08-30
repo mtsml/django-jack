@@ -6,4 +6,5 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('<str:channel_id>/', views.detail, name='detail'),
+    path('<str:category>/<str:foreign_id>/comment/', views.comment, name='comment'),
 ]
