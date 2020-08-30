@@ -67,3 +67,26 @@ class DetailViewTests(TestCase):
             [response.context['channel']], 
             [f'<Channel: {channel_id}>']
         )
+    
+    def test_no_video(self):
+        """
+        テーブルにチャンネルに紐づくビデオが存在しない場合は、何も表示されない
+        """
+        channel_id = 'TokaiOnAir'
+        channel = Channel.objects.create(channel_id=channel_id, channel_nm='東海オンエア')
+        response = self.client.get(f'/{channel_id}/')
+        self.assertQuerysetEqual(response.context['video_list'], [])
+
+    def test_display_video(self):
+        """
+        テーブルにチャンネルに紐づくビデオが存在する場合は、ビデオの一覧が表示される
+        """
+        channel_id = 'TokaiOnAir'
+        channel = Channel.objects.create(channel_id=channel_id, channel_nm='東海オンエア')
+        video_id = 'mP6WW_BHsaA'
+        video = channel.video_set.create(video_id=video_id)
+        response = self.client.get(f'/{channel_id}/')
+        self.assertQuerysetEqual(
+            response.context['video_list'], 
+            [f'<Video: {video_id}>']
+        )

@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from .models import Channel
+from .models import Channel, Video
 from .forms import ChannelForm
 
 
@@ -23,5 +23,6 @@ def index(request):
 
 def detail(request, channel_id):
     channel = get_object_or_404(Channel, channel_id=channel_id)
-    context = {'channel': channel}
+    video_list = channel.video_set.all()
+    context = {'channel': channel, 'video_list': video_list}
     return render(request, 'jack/detail.html', context)
