@@ -1,9 +1,9 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 
 from .models import Channel, Video
-from .forms import ChannelForm
+from .forms import ChannelForm, VideoForm, get_video_id_from_url
 
 
 def index(request):
@@ -22,7 +22,17 @@ def index(request):
 
 
 def detail(request, channel_id):
+    message=None # TODO:messageの処理はもっといい方法があるはず
     channel = get_object_or_404(Channel, channel_id=channel_id)
+    if request.method == 'POST':
+        form = VideoForm(request.POST)
+        if form.is_valid():
+            video_id = get_video_id_from_url(form.cleaned_data['url'])
+            channel.video_set.create(video_id=video_id)
+            return redirect('detail', channel_id=channel_id)
+        else:
+            message = 'そのURLは存在しません'
+    form = VideoForm()
     video_list = channel.video_set.all()
-    context = {'channel': channel, 'video_list': video_list}
+    context = {'form': form, 'channel': channel, 'video_list': video_list, 'message': message}
     return render(request, 'jack/detail.html', context)

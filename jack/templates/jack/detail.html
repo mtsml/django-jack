@@ -5,6 +5,16 @@
             {{ channel.channel_nm }}
         </a>
     </p>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">追加</button>
+    </form>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+
     {% if video_list %}
         <ul>
             {% for video in video_list %}

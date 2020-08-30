@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from .models import Channel
+from .forms import VIDEO_URL_PREFIX
 
 
 class IndexViewTests(TestCase):
@@ -90,3 +91,27 @@ class DetailViewTests(TestCase):
             response.context['video_list'], 
             [f'<Video: {video_id}>']
         )
+
+    def test_add_video(self):
+        """
+        動画を追加すると、テーブルにオブジェクトが追加され、リダイレクトされる
+        """
+        channel_id = 'TokaiOnAir'
+        channel = Channel.objects.create(channel_id=channel_id, channel_nm='東海オンエア')
+        video_id = 'mP6WW_BHsaA'
+        response = self.client.post(f'/{channel_id}/', {'url': f'{VIDEO_URL_PREFIX}{video_id}'})
+        self.assertQuerysetEqual(
+            channel.video_set.all(),
+            [f'<Video: {video_id}>']
+        )
+        self.assertEqual(response.status_code, 302)
+
+    def test_add_invalid_video_url(self):
+        """
+        追加しようとした動画のURLが実在しない場合、テーブルにオブジェクトは作成されず、エラーメッセージが表示されれる
+        """
+        channel_id = 'TokaiOnAir'
+        channel = Channel.objects.create(channel_id=channel_id, channel_nm='東海オンエア')
+        response = self.client.post(f'/{channel_id}/', {'url': VIDEO_URL_PREFIX[:-5]})
+        self.assertContains(response, 'そのURLは存在しません')
+        self.assertQuerysetEqual(response.context['video_list'], [])
