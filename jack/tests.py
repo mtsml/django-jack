@@ -51,6 +51,21 @@ class IndexViewTests(TestCase):
             [f'<Channel: {CHANNEL_ID}>']
         )
 
+    def test_add_exist_channel(self):
+        """
+        既に塘路作されているチャンネルを追加の場合は、テーブルにオブジェクトが追加しない
+        """
+        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
+        response = self.client.post('/', {
+            'channel_id': CHANNEL_ID, 
+            'channel_nm': CHANNEL_NM,
+            'add_channel': ['']
+        })
+        self.assertQuerysetEqual(
+            Channel.objects.all(),
+            [f'<Channel: {CHANNEL_ID}>']
+        )
+
 
 class DetailViewTests(TestCase):
     def test_no_channel(self):

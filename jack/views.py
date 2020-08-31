@@ -18,10 +18,11 @@ def index(request):
     search_result=[]
 
     if request.method == 'POST':
-        if 'add_channel' in request.POST:
+        if 'add_channel' in request.POST:            
             channel_id = request.POST['channel_id']
             channel_nm = request.POST['channel_nm']
-            channel = Channel.objects.create(channel_id=channel_id, channel_nm=channel_nm)
+            if not Channel.is_channel_id_exists(channel_id):
+                channel = Channel.objects.create(channel_id=channel_id, channel_nm=channel_nm)
         elif 'search_channel' in request.POST:
             form = SearchForm(request.POST)
             if form.is_valid():
