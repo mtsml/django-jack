@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 
 from .models import Channel, Comment, Video
-from .forms import ChannelForm, CommentForm, SearchForm, VideoForm, get_video_id_from_url
+from .forms import CommentForm, SearchForm, VideoForm, get_video_id_from_url
 from .youtube import youtube_search
 
 
@@ -28,12 +28,10 @@ def index(request):
                 query = form.cleaned_data['query']
                 search_result = youtube_search('channel', query)
 
-    form = ChannelForm()
     search_form = SearchForm()
     channel_list = Channel.objects.all()
     context = {
         'channel_list': channel_list, 
-        'form': form, 
         'message': message,
         'search_form': search_form,
         'search_result': search_result
