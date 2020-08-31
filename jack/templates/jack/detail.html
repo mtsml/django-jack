@@ -44,11 +44,14 @@
                 {% if video_list %}
                     {% for video in video_list %}
                         <div class="ui segment">
-                            <h2>
-                                <a href="https://www.youtube.com/watch?v={{ video.video_id }}" target="_blank">
-                                    https://www.youtube.com/watch?v={{ video.video_id }}
-                                </a>
-                            </h2>
+                            <div class="ui embed">
+                                <iframe width="560" height="315" 
+                                    src="https://www.youtube.com/embed/{{ video.video_id }}" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
                             <form class="ui form" action="{% url 'comment' 'video' video.video_id %}" method="POST">
                                 {% csrf_token %}
                                 {{ comment_form.as_p }}
