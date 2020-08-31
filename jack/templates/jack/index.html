@@ -1,32 +1,35 @@
 {% extends 'jack/base.html' %}
 {% block content %}
     <div class="ui container">
-        <div class="ui two column stackable grid">
-            <div class="ui column">
-                <form class="ui form" method="POST">
-                    {% csrf_token %}
-                    {{ form.as_p }}
+        <form class="ui form" method="POST">
+            {% csrf_token %}
+            <div class="three fields">
+                <div class="field">
+                    {{ form.channel_id }}
+                </div>
+                <div class="field">
+                    {{ form.channel_nm }}
+                </div>
+                <div class="field">
                     <button class="ui button" type="submit">追加</button>
-                </form>
-                {% if message %}
-                    <p>{{ message }}</p>
-                {% endif %}
+                </div>
             </div>
+        </form>
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
 
-            <div class="ui column">
-                {% if channel_list %}        
-                    {% for channel in channel_list %}
-                        <h2>
-                            <a href="{% url 'detail' channel.channel_id %}">
-                                {{ channel.channel_nm }}
-                            </a>
-                        </h2>
-                        <div class="ui divider"></div>
-                    {% endfor %}
-                {% else %}
-                    <p class="ui message">No Recomended Youtuber.</p>
-                {% endif %}    
-            </div>
-        </div>
+        {% if channel_list %}        
+            {% for channel in channel_list %}
+                <h2>
+                    <a href="{% url 'detail' channel.channel_id %}">
+                        {{ channel.channel_nm }}
+                    </a>
+                </h2>
+                <div class="ui divider"></div>
+            {% endfor %}
+        {% else %}
+            <p class="ui message">No Recomended Youtuber.</p>
+        {% endif %}    
     </div>
 {% endblock %}

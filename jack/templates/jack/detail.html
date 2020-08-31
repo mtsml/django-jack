@@ -13,19 +13,22 @@
         <div class="ui two column stackable grid">
             <div class="ui column">
                 <h2>
-                    コメント        
+                    チャンネルへのコメント        
                 </h2>
                 <form class="ui form" action="{% url 'comment' 'channel' channel.channel_id %}" method="POST">
                     {% csrf_token %}
-                    {{ comment_form.as_p }}
-                    <button class="ui button" type="submit">追加</button>
+                    <div class="two fields">
+                        <div class="field">
+                            {{ comment_form.comment }}
+                        </div>
+                        <div class="field">
+                            <button class="ui button" type="submit">追加</button>
+                        </div>
+                    </div>
                 </form>
                 {% for comment in channel.get_comment_list %}
-                    <div class="ui message">
-                        {{ comment.comment }}
-                    </div>
+                    <p>{{ comment.comment }}</p>
                 {% endfor %}
-                <div class="ui divider"></div>
             </div>
 
             <div class="ui column">
@@ -34,8 +37,14 @@
                 </h2>
                 <form class="ui form" method="POST">
                     {% csrf_token %}
-                    {{ video_form.as_p }}
-                    <button class="ui button" type="submit">追加</button>
+                    <div class="two fields">
+                        <div class="field">
+                            {{ video_form.url }}
+                        </div>
+                        <div class="field">
+                            <button class="ui button" type="submit">追加</button>
+                        </div>
+                    </div>
                 </form>
                 {% if message %}
                     <p class="ui error message">{{ message }}</p>
@@ -52,15 +61,22 @@
                                     allowfullscreen>
                                 </iframe>
                             </div>
+                            <h3>
+                                動画へのコメント
+                            </h3>
                             <form class="ui form" action="{% url 'comment' 'video' video.video_id %}" method="POST">
                                 {% csrf_token %}
-                                {{ comment_form.as_p }}
-                                <button class="ui button" type="submit">追加</button>
+                                <div class="two fields">
+                                    <div class="field">
+                                        {{ comment_form.comment }}
+                                    </div>
+                                    <div class="field">
+                                        <button class="ui button" type="submit">追加</button>
+                                    </div>
+                                </div>
                             </form>
                             {% for comment in video.get_comment_list %}
-                                <div class="ui message">
-                                    {{ comment.comment }}
-                                </div>
+                                <p>{{ comment.comment }}</p>
                             {% endfor %}
                         </div>
                     {% endfor %}
