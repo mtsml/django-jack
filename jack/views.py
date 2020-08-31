@@ -5,7 +5,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 
 from .models import Channel, Comment, Video
-from .forms import ChannelForm, CommentForm, VideoForm, get_video_id_from_url
+from .forms import ChannelForm, CommentForm, SearchForm, VideoForm, get_video_id_from_url
+from .youtube import youtube_search
 
 
 MSG_INVALID_CHANNEL_ID = 'そのチャンネルIDは存在しません'
@@ -13,17 +14,33 @@ MSG_INVALID_VIDEO_URL = 'そのURLは存在しません'
 
 
 def index(request):
-    message=None # TODO:messageの処理はもっといい方法があるはず
+    message=None
+    search_result=[]
+
     if request.method == 'POST':
-        form = ChannelForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('index')
-        else:
-            message = MSG_INVALID_CHANNEL_ID
+        if 'add_channel' in request.POST:
+            form = ChannelForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('index')
+            else:
+                message = MSG_INVALID_CHANNEL_ID
+        elif 'search_channel' in request.POST:
+            form = SearchForm(request.POST)
+            if form.is_valid():
+                query = form.cleaned_data['query']
+                search_result = youtube_search('channel', query)
+
     form = ChannelForm()
+    search_form = SearchForm()
     channel_list = Channel.objects.all()
-    context = {'form': form, 'channel_list': channel_list, 'message': message}    
+    context = {
+        'channel_list': channel_list, 
+        'form': form, 
+        'message': message,
+        'search_form': search_form,
+        'search_result': search_result
+    }
     return render(request, 'jack/index.html', context)
 
 
