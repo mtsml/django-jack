@@ -12,13 +12,16 @@ def get_video_id_from_url(url):
 
 
 class ChannelForm(forms.ModelForm):
+    channel_id = forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder':'チャンネルID'
+    }))
+    channel_nm = forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder':'チャンネル名'
+    }))
+
     class Meta:
         model = Channel
         fields = ('channel_id', 'channel_nm')
-        labels = {
-            'channel_id': 'チャンネルID',
-            'channel_nm': 'チャンネル名'
-        }
 
     def clean_channel_id(self):
         channel_id = self.cleaned_data['channel_id']
@@ -36,7 +39,9 @@ class ChannelForm(forms.ModelForm):
 
 
 class VideoForm(forms.Form):
-    url = forms.CharField()
+    url = forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder':'動画URL'
+    }))
 
     def clean_url(self):
         url = self.cleaned_data['url']
@@ -56,4 +61,6 @@ class VideoForm(forms.Form):
 
 
 class CommentForm(forms.Form):
-    comment = forms.CharField(max_length=2000)
+    comment = forms.CharField(max_length=2000, widget=forms.TextInput(attrs={
+        'placeholder':'コメント'
+    }))
