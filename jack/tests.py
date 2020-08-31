@@ -39,22 +39,32 @@ class IndexViewTests(TestCase):
 
     def test_add_channel(self):
         """
-        チャンネルを追加すると、テーブルにオブジェクトが追加され、リダイレクトされる
+        チャンネルを追加すると、テーブルにオブジェクトが追加される
         """
-        response = self.client.post('/', {'channel_id': CHANNEL_ID, 'channel_nm': CHANNEL_NM})
+        response = self.client.post('/', {
+            'channel_id': CHANNEL_ID, 
+            'channel_nm': CHANNEL_NM,
+            'add_channel': ['']
+        })
         self.assertQuerysetEqual(
             Channel.objects.all(),
             [f'<Channel: {CHANNEL_ID}>']
         )
-        self.assertEqual(response.status_code, 302)
 
-    def test_add_invalid_channel(self):
+    def test_add_exist_channel(self):
         """
-        追加しようとしたチャンネルが実在しない場合、テーブルにオブジェクトは作成されず、エラーメッセージが表示されれる
+        既に塘路作されているチャンネルを追加の場合は、テーブルにオブジェクトが追加しない
         """
-        response = self.client.post('/', {'channel_id': CHANNEL_ID_INVALID, 'channel_nm': CHANNEL_NM_INVALID})
-        self.assertContains(response, MSG_INVALID_CHANNEL_ID)
-        self.assertQuerysetEqual(response.context['channel_list'], [])
+        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
+        response = self.client.post('/', {
+            'channel_id': CHANNEL_ID, 
+            'channel_nm': CHANNEL_NM,
+            'add_channel': ['']
+        })
+        self.assertQuerysetEqual(
+            Channel.objects.all(),
+            [f'<Channel: {CHANNEL_ID}>']
+        )
 
 
 class DetailViewTests(TestCase):
@@ -101,30 +111,14 @@ class DetailViewTests(TestCase):
         動画を追加すると、テーブルにオブジェクトが追加され、リダイレクトされる
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        response = self.client.post(f'/{CHANNEL_ID}/', {'url': f'{VIDEO_URL_PREFIX}{VIDEO_ID}'})
+        response = self.client.post(f'/{CHANNEL_ID}/', {
+            'video_id': {VIDEO_ID},
+            'add_video': ['']
+        })
         self.assertQuerysetEqual(
             channel.video_set.all(),
             [f'<Video: {VIDEO_ID}>']
         )
-        self.assertEqual(response.status_code, 302)
-
-    def test_add_invalid_video_url(self):
-        """
-        追加しようとした動画のURLが実在しない場合、テーブルにオブジェクトは作成されず、エラーメッセージが表示されれる
-        """
-        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        response = self.client.post(f'/{CHANNEL_ID}/', {'url': VIDEO_URL_PREFIX[:-5]})
-        self.assertContains(response, MSG_INVALID_VIDEO_URL)
-        self.assertQuerysetEqual(response.context['video_list'], [])
-
-    def test_display_channel_comment(self):
-        """
-        チャンネルに紐づくコメントが存在する場合は、コメントの一覧が表示される
-        """
-        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        comment = Comment.objects.create(category='channel', foreign_id=CHANNEL_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
-        response = self.client.get(f'/{CHANNEL_ID}/')
-        self.assertContains(response, COMMENT)
 
     def test_display_video_comment(self):
         """

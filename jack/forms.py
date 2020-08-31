@@ -11,33 +11,6 @@ def get_video_id_from_url(url):
     return url.replace(VIDEO_URL_PREFIX, '')
 
 
-class ChannelForm(forms.ModelForm):
-    channel_id = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder':'チャンネルID'
-    }))
-    channel_nm = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder':'チャンネル名'
-    }))
-
-    class Meta:
-        model = Channel
-        fields = ('channel_id', 'channel_nm')
-
-    def clean_channel_id(self):
-        channel_id = self.cleaned_data['channel_id']
-        if not self.is_valid_channel_id(channel_id):
-            raise forms.ValidationError('invalid channel id')
-        return channel_id
-
-    def is_valid_channel_id(self, channel_id):
-        url = f'https://www.youtube.com/user/{channel_id}/'
-        r = urllib3.PoolManager().request('GET', url)
-        if r.status == 200:
-            return True
-        else:
-            return False
-
-
 class VideoForm(forms.Form):
     url = forms.CharField(widget=forms.TextInput(attrs={
         'placeholder':'動画URL'
@@ -64,3 +37,7 @@ class CommentForm(forms.Form):
     comment = forms.CharField(max_length=2000, widget=forms.TextInput(attrs={
         'placeholder':'コメント'
     }))
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField(max_length=200)
