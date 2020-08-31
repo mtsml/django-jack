@@ -15,44 +15,38 @@
                         </div>
                     </div>
                 </form>
+
                 {% for result in search_result %}
-                    <div class='item'>
-                        <img
-                            class="ui circular image" 
-                            src="{{ result.snippet.thumbnails.default.url }}" 
-                            alt="{{ result.snippet.title }}" 
-                        >
+                    <div class='ui item'>
+                        <a href="https://youtube.com/channel/{{ result.id.channelId }}" target="_blank">
+                            <img
+                                class="ui circular image" 
+                                src="{{ result.snippet.thumbnails.default.url }}" 
+                                alt="{{ result.snippet.title }}" 
+                            >
+                        </a>
                         <h2 class="ui header">
                             {{ result.snippet.title }}
                             <div class="sub header">
                                 {{ result.snippet.description}}
                             </div>
                         </h2>
+                        <form action="{% url 'index' %}" class="ui form" method="POST">
+                            {% csrf_token %}
+                            <input name="channel_id" type="hidden" value="{{ result.id.channelId }}">
+                            <input name="channel_nm" type="hidden" value="{{ result.snippet.title }}">
+                            <button class="ui button" name='add_channel' type="submit">追加</button>
+                        </form>
                     </div>
+                    {% if message %}
+                        <p>{{ message }}</p>
+                    {% endif %}    
                     <div class="ui divider"></div>
                 {% endfor %}
             </div>
 
             <div class="column">
                 <h2>おすすめYoutuber</h2>
-                <form class="ui form" method="POST">
-                    {% csrf_token %}
-                    <div class="three fields">
-                        <div class="field">
-                            {{ form.channel_id }}
-                        </div>
-                        <div class="field">
-                            {{ form.channel_nm }}
-                        </div>
-                        <div class="field">
-                            <button class="ui button" name='add_channel' type="submit">追加</button>
-                        </div>
-                    </div>
-                </form>
-                {% if message %}
-                    <p>{{ message }}</p>
-                {% endif %}
-
                 {% if channel_list %}        
                     {% for channel in channel_list %}
                         <h2>

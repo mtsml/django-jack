@@ -19,12 +19,9 @@ def index(request):
 
     if request.method == 'POST':
         if 'add_channel' in request.POST:
-            form = ChannelForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('index')
-            else:
-                message = MSG_INVALID_CHANNEL_ID
+            channel_id = request.POST['channel_id']
+            channel_nm = request.POST['channel_nm']
+            channel = Channel.objects.create(channel_id=channel_id, channel_nm=channel_nm)
         elif 'search_channel' in request.POST:
             form = SearchForm(request.POST)
             if form.is_valid():

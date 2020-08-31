@@ -39,7 +39,7 @@ class IndexViewTests(TestCase):
 
     def test_add_channel(self):
         """
-        チャンネルを追加すると、テーブルにオブジェクトが追加され、リダイレクトされる
+        チャンネルを追加すると、テーブルにオブジェクトが追加される
         """
         response = self.client.post('/', {
             'channel_id': CHANNEL_ID, 
@@ -50,19 +50,6 @@ class IndexViewTests(TestCase):
             Channel.objects.all(),
             [f'<Channel: {CHANNEL_ID}>']
         )
-        self.assertEqual(response.status_code, 302)
-
-    def test_add_invalid_channel(self):
-        """
-        追加しようとしたチャンネルが実在しない場合、テーブルにオブジェクトは作成されず、エラーメッセージが表示されれる
-        """
-        response = self.client.post('/', {
-            'channel_id': CHANNEL_ID_INVALID, 
-            'channel_nm': CHANNEL_NM_INVALID,
-            'add_channel': ['']
-        })
-        self.assertContains(response, MSG_INVALID_CHANNEL_ID)
-        self.assertQuerysetEqual(response.context['channel_list'], [])
 
 
 class DetailViewTests(TestCase):
