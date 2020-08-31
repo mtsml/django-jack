@@ -40,6 +40,4 @@ class CommentForm(forms.Form):
 
 
 class SearchForm(forms.Form):
-    query = forms.CharField(max_length=200, widget=forms.TextInput(attrs={
-        'placeholder':'チャンネル名'
-    }))
+    query = forms.CharField(max_length=200)

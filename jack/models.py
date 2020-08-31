@@ -22,6 +22,9 @@ class Video(models.Model):
     def __str__(self):
         return self.video_id
 
+    def is_video_id_exists(video_id):
+        return Video.objects.filter(video_id=video_id).exists()
+
     def get_comment_list(self):
         return Comment.objects.filter(category='video', foreign_id=self.video_id).order_by('-reg_datetime')
 

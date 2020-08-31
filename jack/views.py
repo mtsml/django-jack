@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from .models import Channel, Comment, Video
 from .forms import CommentForm, SearchForm, VideoForm, get_video_id_from_url
-from .youtube import youtube_search
+from .youtube import search_channel, search_video_in_channel
 
 
 MSG_INVALID_CHANNEL_ID = 'そのチャンネルIDは存在しません'
@@ -27,7 +27,7 @@ def index(request):
             form = SearchForm(request.POST)
             if form.is_valid():
                 query = form.cleaned_data['query']
-                search_result = youtube_search('channel', query)
+                search_result = search_channel(query)
 
     search_form = SearchForm()
     channel_list = Channel.objects.all()
@@ -41,25 +41,31 @@ def index(request):
 
 
 def detail(request, channel_id):
-    message=None # TODO:messageの処理はもっといい方法があるはず
+    message=None
+    search_result=[]
     channel = get_object_or_404(Channel, channel_id=channel_id)
+
     if request.method == 'POST':
-        form = VideoForm(request.POST)
-        if form.is_valid():
-            video_id = get_video_id_from_url(form.cleaned_data['url'])
-            channel.video_set.create(video_id=video_id)
-            return redirect('detail', channel_id=channel_id)
-        else:
-            message = MSG_INVALID_VIDEO_URL
-    video_form = VideoForm()
+        if 'add_video' in request.POST:
+            video_id = request.POST['video_id']
+            if not Video.is_video_id_exists(video_id):
+                channel.video_set.create(video_id=video_id)
+        elif 'search_video' in request.POST:
+            form = SearchForm(request.POST)
+            if form.is_valid():
+                query = form.cleaned_data['query']
+                search_result = search_video_in_channel(channel_id, query)
+
+    search_form = SearchForm()
     comment_form = CommentForm()
     video_list = channel.video_set.all()
     context = {
-        'video_form': video_form, 
         'comment_form': comment_form,
         'channel': channel, 
         'video_list': video_list, 
-        'message': message
+        'message': message,
+        'search_form': search_form,
+        'search_result': search_result
     }
     return render(request, 'jack/detail.html', context)
 
