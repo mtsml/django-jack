@@ -13,9 +13,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 
-import mimetypes
-mimetypes.add_type("text/css", ".css", True)
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -29,46 +26,6 @@ SECRET_KEY = '7i54guo(4b&f4ny=+-!o#4h8@dva&frsc%93yyu00*pi5jlm_9'
 
 
 ALLOWED_HOSTS = ['*']
-
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': ('%(asctime)s [%(process)d] [%(levelname)s] '
-                       'pathname=%(pathname)s lineno=%(lineno)s '
-                       'funcname=%(funcName)s %(message)s'),
-            'datefmt': '%Y-%m-%d %H:%M:%S'
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        }
-    },
-    'handlers': {
-        'null': {
-            'level': 'DEBUG',
-            'class': 'logging.NullHandler',
-        },
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        }
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    }
-}
 
 
 # Application definition
@@ -117,17 +74,6 @@ WSGI_APPLICATION = 'django-jack.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': config_ini['DEFAULT']['DB_NAME'],
-#         'USER': config_ini['DEFAULT']['DB_USER'],
-#         'PASSWORD': config_ini['DEFAULT']['DB_PASSWORD'],
-#         'HOST': config_ini['DEFAULT']['DB_HOST'],
-#         'PORT': config_ini['DEFAULT']['DB_PORT'],
-#     }
-# }
 
 
 # Password validation
