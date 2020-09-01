@@ -70,14 +70,15 @@
                         <h3>
                             動画へのコメント
                         </h3>
-                        <form class="ui form" action="{% url 'comment' 'video' video.video_id %}" method="POST">
+                        <form class="ui form" action="{% url 'detail' channel.channel_id %}" method="POST">
                             {% csrf_token %}
                             <div class="two fields">
                                 <div class="field">
                                     {{ comment_form.comment }}
                                 </div>
                                 <div class="field">
-                                    <button class="ui button" type="submit">追加</button>
+                                    <input name="video_id" type="hidden" value="{{ video.video_id }}">
+                                    <button class="ui button" name="add_comment" type="submit">追加</button>
                                 </div>
                             </div>
                         </form>
