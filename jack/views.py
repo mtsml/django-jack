@@ -1,11 +1,10 @@
 import datetime
 
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
+from .forms import CommentForm, SearchForm
 from .models import Channel, Comment, Video
-from .forms import CommentForm, SearchForm, VideoForm, get_video_id_from_url
 from .youtube import search_channel, search_video_in_channel
 
 
@@ -25,8 +24,8 @@ def index(request):
                 query = form.cleaned_data['query']
                 search_result = search_channel(query)
 
-    search_form = SearchForm()
     channel_list = Channel.objects.all()
+    search_form = SearchForm()
 
     context = {
         'channel_list': channel_list, 
@@ -41,6 +40,7 @@ def index(request):
 def detail(request, channel_id):
     message=None
     search_result=[]
+
     channel = get_object_or_404(Channel, channel_id=channel_id)
 
     if request.method == 'POST':
@@ -65,8 +65,8 @@ def detail(request, channel_id):
                 )
                 return redirect('detail', channel_id=channel_id)
 
-    search_form = SearchForm()
     comment_form = CommentForm()
+    search_form = SearchForm()
     video_list = channel.video_set.all()
 
     context = {

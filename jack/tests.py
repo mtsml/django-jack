@@ -4,7 +4,6 @@ from django.test import TestCase
 from django.urls import reverse
 
 from .models import Channel, Comment
-from .forms import VIDEO_URL_PREFIX
 
 
 CHANNEL_ID = 'TokaiOnAir'
