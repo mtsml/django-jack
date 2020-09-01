@@ -9,10 +9,6 @@ from .forms import CommentForm, SearchForm, VideoForm, get_video_id_from_url
 from .youtube import search_channel, search_video_in_channel
 
 
-MSG_INVALID_CHANNEL_ID = 'そのチャンネルIDは存在しません'
-MSG_INVALID_VIDEO_URL = 'そのURLは存在しません'
-
-
 def index(request):
     message=None
     search_result=[]
@@ -31,12 +27,14 @@ def index(request):
 
     search_form = SearchForm()
     channel_list = Channel.objects.all()
+
     context = {
         'channel_list': channel_list, 
         'message': message,
         'search_form': search_form,
         'search_result': search_result
     }
+
     return render(request, 'jack/index.html', context)
 
 
@@ -55,34 +53,29 @@ def detail(request, channel_id):
             if form.is_valid():
                 query = form.cleaned_data['query']
                 search_result = search_video_in_channel(channel_id, query)
+        elif 'add_comment' in request.POST:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                video_id = request.POST['video_id']
+                comment = Comment.objects.create(
+                    category='video', 
+                    foreign_id=video_id,
+                    comment=form.cleaned_data['comment'],
+                    reg_datetime=datetime.datetime.now()
+                )
+                return redirect('detail', channel_id=channel_id)
 
     search_form = SearchForm()
     comment_form = CommentForm()
     video_list = channel.video_set.all()
+
     context = {
-        'comment_form': comment_form,
         'channel': channel, 
-        'video_list': video_list, 
+        'comment_form': comment_form,
         'message': message,
         'search_form': search_form,
-        'search_result': search_result
+        'search_result': search_result,
+        'video_list': video_list
     }
+
     return render(request, 'jack/detail.html', context)
-
-
-def comment(request, category, foreign_id):
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = Comment.objects.create(
-                category=category, 
-                foreign_id=foreign_id,
-                comment=form.cleaned_data['comment'],
-                reg_datetime=datetime.datetime.now()
-            )
-            if category == 'channel':
-                return redirect('detail', channel_id=foreign_id)
-            else:
-                channel_id = Video.objects.get(video_id=foreign_id).channel_id
-                return redirect('detail', channel_id=channel_id)
-    return redirect('index') # TODO:エラーページとかに飛ばす

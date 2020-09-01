@@ -5,7 +5,6 @@ from django.urls import reverse
 
 from .models import Channel, Comment
 from .forms import VIDEO_URL_PREFIX
-from .views import MSG_INVALID_CHANNEL_ID, MSG_INVALID_VIDEO_URL
 
 
 CHANNEL_ID = 'TokaiOnAir'
@@ -130,27 +129,18 @@ class DetailViewTests(TestCase):
         response = self.client.get(f'/{CHANNEL_ID}/')
         self.assertContains(response, COMMENT)
 
-    def test_add_channel_comment(self):
-        """
-        チャンネルにコメントを追加すると、テーブルにオブジェクトが作成され、リダイレクトされる
-        """
-        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        response = self.client.post(f'/channel/{CHANNEL_ID}/comment/', {'comment': COMMENT})
-        self.assertQuerysetEqual(
-            Comment.objects.all(),
-            [f'<Comment: channel:{CHANNEL_ID}>']
-        )
-        self.assertEqual(response.status_code, 302)
-
     def test_add_video_comment(self):
         """
-        動画にコメントを追加すると、テーブルにオブジェクトが作成され、リダイレクトされる
+        動画にコメントを追加すると、テーブルにオブジェクトが作成される
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
         video = channel.video_set.create(video_id=VIDEO_ID)
-        response = self.client.post(f'/video/{VIDEO_ID}/comment/', {'comment': COMMENT})
+        response = self.client.post(f'/{CHANNEL_ID}/', {
+            'video_id': VIDEO_ID,
+            'comment': COMMENT,
+            'add_comment': ['']
+        })
         self.assertQuerysetEqual(
             Comment.objects.all(),
             [f'<Comment: video:{VIDEO_ID}>']
         )
-        self.assertEqual(response.status_code, 302)
