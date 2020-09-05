@@ -2,6 +2,8 @@ import os
 
 from apiclient.discovery import build
 
+from .models import Channel, Video
+
 
 DEVELOPER_KEY = os.environ['YOUTUBE_API_ACCESS_KEY']
 YOUTUBE_API_SERVICE_NAME = "youtube"
@@ -24,12 +26,30 @@ def search_youtube(query):
 
     channel_list =[]
     video_list = []
-    print(response["items"])
     for item in response["items"]:
         if item["id"]["kind"] == "youtube#channel":
-            channel_list.append(item)
+            registered = False
+            if Channel.is_channel_id_exists(item["id"]["channelId"]):
+                registered = True
+            channel_list.append({
+                'channel_id': item["id"]["channelId"],
+                'thumbnails_url': item["snippet"]["thumbnails"]["default"]["url"],
+                'channel_nm': item["snippet"]["title"],
+                'description': item["snippet"]["description"],
+                'registered': registered
+            })
         elif item["id"]["kind"] == "youtube#video":
-            video_list.append(item)
+            registered = False
+            if Video.is_video_id_exists(item["id"]["videoId"]):
+                registered = True
+            video_list.append({
+                'video_id': item["id"]["videoId"],
+                'thumbnails_url': item["snippet"]["thumbnails"]["default"]["url"],
+                'video_nm': item["snippet"]["title"],
+                'description': item["snippet"]["description"],
+                'channel_id': item["snippet"]["channelId"],
+                'registered': registered
+            })
 
     result = {
         'channel_list': channel_list,

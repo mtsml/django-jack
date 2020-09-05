@@ -6,24 +6,28 @@
                 <h2>チャンネルの検索結果</h2>
                 {% for channel in channel_list %}
                     <div class='ui item'>
-                        <a href="https://youtube.com/channel/{{ channel.id.channelId }}" target="_blank">
+                        <a href="https://youtube.com/channel/{{ channel.channel_id }}" target="_blank">
                             <img
                                 class="ui left floated circular image" 
-                                src="{{ channel.snippet.thumbnails.default.url }}" 
-                                alt="{{ channel.snippet.title }}" 
+                                src="{{ channel.thumbnails_url }}"
+                                alt="{{ channel.channel_nm }}" 
                             >
                         </a>
                         <h2 class="ui header">
-                            {{ channel.snippet.title }}
+                            {{ channel.channel_nm }}
                             <div class="sub header">
-                                {{ channel.snippet.description}}
+                                {{ channel.description }}
                             </div>
                         </h2>
                         <form action="{% url 'search' %}" class="ui form" method="POST">
                             {% csrf_token %}
-                            <input name="channel_id" type="hidden" value="{{ channel.id.channelId }}">
-                            <input name="channel_nm" type="hidden" value="{{ channel.snippet.title }}">
-                            <button class="ui button" name='add_channel' type="submit">追加</button>
+                            <input name="channel_id" type="hidden" value="{{ channel.channel_id }}">
+                            <input name="channel_nm" type="hidden" value="{{ channel.channel_nm }}">
+                            <button class="ui button" name='add_channel' type="submit"
+                                {% if channel.registered %}disabled{% endif %}
+                            >
+                                追加
+                            </button>
                         </form>
                     </div>
                     <div class="ui divider"></div>
@@ -34,24 +38,28 @@
                 <h2>動画の検索結果</h2>
                 {% for video in video_list %}
                     <div class='ui item'>
-                        <a href="https://www.youtube.com/watch?v={{ video.id.videoId }}" target="_blank">
+                        <a href="https://www.youtube.com/watch?v={{ video.video_id }}" target="_blank">
                             <img
                                 class="ui left floated image" 
-                                src="{{ video.snippet.thumbnails.default.url }}" 
-                                alt="{{ video.snippet.title }}" 
+                                src="{{ video.thumbnails_url }}" 
+                                alt="{{ video.video_nm }}" 
                             >
                         </a>
                         <h2 class="ui header">
-                            {{ video.snippet.title }}
+                            {{ video.video_nm }}
                             <div class="sub header">
-                                {{ video.snippet.description}}
+                                {{ video.description }}
                             </div>
                         </h2>
                         <form action="{% url 'search' %}" class="ui form" method="POST">
                             {% csrf_token %}
-                            <input name="channel_id" type="hidden" value="{{ video.snippet.channelId }}">
-                            <input name="video_id" type="hidden" value="{{ video.id.videoId }}">
-                            <button class="ui button" name='add_video' type="submit">追加</button>
+                            <input name="channel_id" type="hidden" value="{{ video.channel_id }}">
+                            <input name="video_id" type="hidden" value="{{ video.video_id }}">
+                            <button class="ui button" name='add_video' type="submit"
+                                {% if video.registered %}disabled{% endif %}
+                            >
+                                追加
+                            </button>
                         </form>
                     </div>
                 {% endfor %}
