@@ -42,55 +42,35 @@ class IndexViewTests(TestCase):
         )
 
 
-# class SearchViewTests(TestCase):
-#     def test_no_channel(self):
-#         """
-#         テーブルにチャンネルが存在しない場合は、メッセージが表示される
-#         """
-#         response = self.client.get(reverse('index'))
-#         self.assertEqual(response.status_code, 200)
-#         self.assertContains(response, 'No Recomended Youtuber.')
-#         self.assertQuerysetEqual(response.context['channel_list'], [])
+class SearchViewTests(TestCase):
+    def test_add_channel(self):
+        """
+        チャンネルを追加すると、テーブルにオブジェクトが追加される
+        """
+        response = self.client.post('/search/', {
+            'channel_id': CHANNEL_ID, 
+            'channel_nm': CHANNEL_NM,
+            'add_channel': ['']
+        })
+        self.assertQuerysetEqual(
+            Channel.objects.all(),
+            [f'<Channel: {CHANNEL_ID}>']
+        )
 
-#     def test_display_channel(self):
-#         """
-#         テーブルにチャンネルが存在する場合は、チャンネルの一覧が表示される
-#         """
-#         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-#         response = self.client.get(reverse('index'))
-#         self.assertQuerysetEqual(
-#             response.context['channel_list'], 
-#             [f'<Channel: {CHANNEL_ID}>']
-#         )
-
-#     def test_add_channel(self):
-#         """
-#         チャンネルを追加すると、テーブルにオブジェクトが追加される
-#         """
-#         response = self.client.post('/', {
-#             'channel_id': CHANNEL_ID, 
-#             'channel_nm': CHANNEL_NM,
-#             'add_channel': ['']
-#         })
-#         self.assertQuerysetEqual(
-#             Channel.objects.all(),
-#             [f'<Channel: {CHANNEL_ID}>']
-#         )
-
-#     def test_add_exist_channel(self):
-#         """
-#         既に塘路作されているチャンネルを追加の場合は、テーブルにオブジェクトが追加しない
-#         """
-#         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-#         response = self.client.post('/', {
-#             'channel_id': CHANNEL_ID, 
-#             'channel_nm': CHANNEL_NM,
-#             'add_channel': ['']
-#         })
-#         self.assertQuerysetEqual(
-#             Channel.objects.all(),
-#             [f'<Channel: {CHANNEL_ID}>']
-#         )
+    def test_add_exist_channel(self):
+        """
+        既に作成されているチャンネルの場合は、テーブルにオブジェクトを追加しない
+        """
+        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
+        response = self.client.post('/search/', {
+            'channel_id': CHANNEL_ID, 
+            'channel_nm': CHANNEL_NM,
+            'add_channel': ['']
+        })
+        self.assertQuerysetEqual(
+            Channel.objects.all(),
+            [f'<Channel: {CHANNEL_ID}>']
+        )
 
 
 class ChannelViewTests(TestCase):

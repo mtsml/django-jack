@@ -4,49 +4,57 @@
         <div class="ui two column stackable grid">
             <div class="column">
                 <h2>チャンネルの検索結果</h2>
-                {% for result in search_result %}
+                {% for channel in channel_list %}
                     <div class='ui item'>
-                        <a href="https://youtube.com/channel/{{ result.id.channelId }}" target="_blank">
+                        <a href="https://youtube.com/channel/{{ channel.id.channelId }}" target="_blank">
                             <img
                                 class="ui left floated circular image" 
-                                src="{{ result.snippet.thumbnails.default.url }}" 
-                                alt="{{ result.snippet.title }}" 
+                                src="{{ channel.snippet.thumbnails.default.url }}" 
+                                alt="{{ channel.snippet.title }}" 
                             >
                         </a>
                         <h2 class="ui header">
-                            {{ result.snippet.title }}
+                            {{ channel.snippet.title }}
                             <div class="sub header">
-                                {{ result.snippet.description}}
+                                {{ channel.snippet.description}}
                             </div>
                         </h2>
-                        <form action="{% url 'index' %}" class="ui form" method="POST">
+                        <form action="{% url 'search' %}" class="ui form" method="POST">
                             {% csrf_token %}
-                            <input name="channel_id" type="hidden" value="{{ result.id.channelId }}">
-                            <input name="channel_nm" type="hidden" value="{{ result.snippet.title }}">
+                            <input name="channel_id" type="hidden" value="{{ channel.id.channelId }}">
+                            <input name="channel_nm" type="hidden" value="{{ channel.snippet.title }}">
                             <button class="ui button" name='add_channel' type="submit">追加</button>
                         </form>
                     </div>
-                    {% if message %}
-                        <p>{{ message }}</p>
-                    {% endif %}    
                     <div class="ui divider"></div>
                 {% endfor %}
             </div>
 
             <div class="column">
                 <h2>動画の検索結果</h2>
-                <!-- {% if channel_list %}        
-                    {% for channel in channel_list %}
-                        <h2>
-                            <a href="{% url 'channel' channel.channel_id %}">
-                                {{ channel.channel_nm }}
-                            </a>
+                {% for video in video_list %}
+                    <div class='ui item'>
+                        <a href="https://www.youtube.com/watch?v={{ video.id.videoId }}" target="_blank">
+                            <img
+                                class="ui left floated image" 
+                                src="{{ video.snippet.thumbnails.default.url }}" 
+                                alt="{{ video.snippet.title }}" 
+                            >
+                        </a>
+                        <h2 class="ui header">
+                            {{ video.snippet.title }}
+                            <div class="sub header">
+                                {{ video.snippet.description}}
+                            </div>
                         </h2>
-                        <div class="ui divider"></div>
-                    {% endfor %}
-                {% else %}
-                    <p class="ui message">No Recomended Youtuber.</p>
-                {% endif %}       -->
+                        <form action="{% url 'search' %}" class="ui form" method="POST">
+                            {% csrf_token %}
+                            <input name="channel_id" type="hidden" value="{{ video.snippet.channelId }}">
+                            <input name="video_id" type="hidden" value="{{ video.id.videoId }}">
+                            <button class="ui button" name='add_video' type="submit">追加</button>
+                        </form>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
