@@ -65,12 +65,12 @@ class IndexViewTests(TestCase):
         )
 
 
-class DetailViewTests(TestCase):
+class ChannelViewTests(TestCase):
     def test_no_channel(self):
         """
         テーブルにチャンネルが存在しない場合は、404エラー
         """
-        response = self.client.get(f'/{CHANNEL_ID_INVALID}/')
+        response = self.client.get(f'/channel/{CHANNEL_ID_INVALID}/')
         self.assertEqual(response.status_code, 404)
 
     def test_display_channel(self):
@@ -78,7 +78,7 @@ class DetailViewTests(TestCase):
         テーブルにチャンネルが存在する場合は、チャンネルの詳細が表示される
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        response = self.client.get(f'/{CHANNEL_ID}/')
+        response = self.client.get(f'/channel/{CHANNEL_ID}/')
         self.assertQuerysetEqual(
             [response.context['channel']], 
             [f'<Channel: {CHANNEL_ID}>']
@@ -89,7 +89,7 @@ class DetailViewTests(TestCase):
         テーブルにチャンネルに紐づくビデオが存在しない場合は、何も表示されない
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        response = self.client.get(f'/{CHANNEL_ID}/')
+        response = self.client.get(f'/channel/{CHANNEL_ID}/')
         self.assertQuerysetEqual(response.context['video_list'], [])
 
     def test_display_video(self):
@@ -98,7 +98,7 @@ class DetailViewTests(TestCase):
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
         video = channel.video_set.create(video_id=VIDEO_ID)
-        response = self.client.get(f'/{CHANNEL_ID}/')
+        response = self.client.get(f'/channel/{CHANNEL_ID}/')
         self.assertQuerysetEqual(
             response.context['video_list'], 
             [f'<Video: {VIDEO_ID}>']
@@ -109,7 +109,7 @@ class DetailViewTests(TestCase):
         動画を追加すると、テーブルにオブジェクトが追加され、リダイレクトされる
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        response = self.client.post(f'/{CHANNEL_ID}/', {
+        response = self.client.post(f'/channel/{CHANNEL_ID}/', {
             'video_id': {VIDEO_ID},
             'add_video': ['']
         })
@@ -125,7 +125,7 @@ class DetailViewTests(TestCase):
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
         video = channel.video_set.create(video_id=VIDEO_ID)
         comment = Comment.objects.create(category='video', foreign_id=VIDEO_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
-        response = self.client.get(f'/{CHANNEL_ID}/')
+        response = self.client.get(f'/channel/{CHANNEL_ID}/')
         self.assertContains(response, COMMENT)
 
     def test_add_video_comment(self):
@@ -134,8 +134,54 @@ class DetailViewTests(TestCase):
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
         video = channel.video_set.create(video_id=VIDEO_ID)
-        response = self.client.post(f'/{CHANNEL_ID}/', {
+        response = self.client.post(f'/channel/{CHANNEL_ID}/', {
             'video_id': VIDEO_ID,
+            'comment': COMMENT,
+            'add_comment': ['']
+        })
+        self.assertQuerysetEqual(
+            Comment.objects.all(),
+            [f'<Comment: video:{VIDEO_ID}>']
+        )
+
+
+class VideoViewTests(TestCase):
+    def test_no_video(self):
+        """
+        テーブルに動画が存在しない場合は、404エラー
+        """
+        response = self.client.get(f'/video/{VIDEO_ID}/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_display_video(self):
+        """
+        テーブルに動画が存在する場合は、動画の詳細が表示される
+        """
+        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
+        video = channel.video_set.create(video_id=VIDEO_ID)
+        response = self.client.get(f'/video/{VIDEO_ID}/')
+        self.assertQuerysetEqual(
+            [response.context['video']], 
+            [f'<Video: {VIDEO_ID}>']
+        )
+
+    def test_display_comment(self):
+        """
+        テーブルに動画のコメントが存在する場合は、コメントが表示される
+        """
+        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
+        video = channel.video_set.create(video_id=VIDEO_ID)
+        comment = Comment.objects.create(category='video', foreign_id=VIDEO_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
+        response = self.client.get(f'/video/{VIDEO_ID}/')
+        self.assertContains(response, COMMENT)
+
+    def test_add_video_comment(self):
+        """
+        動画にコメントを追加すると、テーブルにオブジェクトが作成される
+        """
+        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
+        video = channel.video_set.create(video_id=VIDEO_ID)
+        response = self.client.post(f'/video/{VIDEO_ID}/', {
             'comment': COMMENT,
             'add_comment': ['']
         })

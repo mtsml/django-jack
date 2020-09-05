@@ -50,7 +50,7 @@
                 {% if channel_list %}        
                     {% for channel in channel_list %}
                         <h2>
-                            <a href="{% url 'detail' channel.channel_id %}">
+                            <a href="{% url 'channel' channel.channel_id %}">
                                 {{ channel.channel_nm }}
                             </a>
                         </h2>

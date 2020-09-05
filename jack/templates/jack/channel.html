@@ -40,7 +40,7 @@
                                 {{ result.snippet.description}}
                             </div>
                         </h2>
-                        <form action="{% url 'detail' channel.channel_id %}" class="ui form" method="POST">
+                        <form action="{% url 'channel' channel.channel_id %}" class="ui form" method="POST">
                             {% csrf_token %}
                             <input name="video_id" type="hidden" value="{{ result.id.videoId }}">
                             <button class="ui button" name='add_video' type="submit">追加</button>
@@ -70,7 +70,7 @@
                         <h3>
                             動画へのコメント
                         </h3>
-                        <form class="ui form" action="{% url 'detail' channel.channel_id %}" method="POST">
+                        <form class="ui form" action="{% url 'channel' channel.channel_id %}" method="POST">
                             {% csrf_token %}
                             <div class="two fields">
                                 <div class="field">

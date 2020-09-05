@@ -37,7 +37,7 @@ def index(request):
     return render(request, 'jack/index.html', context)
 
 
-def detail(request, channel_id):
+def channel(request, channel_id):
     message=None
     search_result=[]
 
@@ -63,7 +63,7 @@ def detail(request, channel_id):
                     comment=form.cleaned_data['comment'],
                     reg_datetime=datetime.datetime.now()
                 )
-                return redirect('detail', channel_id=channel_id)
+                return redirect('channel', channel_id=channel_id)
 
     comment_form = CommentForm()
     search_form = SearchForm()
@@ -78,4 +78,38 @@ def detail(request, channel_id):
         'video_list': video_list
     }
 
-    return render(request, 'jack/detail.html', context)
+    return render(request, 'jack/channel.html', context)
+
+
+def video(request, video_id):
+    message=None
+    search_result=[]
+
+    video = get_object_or_404(Video, video_id=video_id)
+
+    if request.method == 'POST':
+        if 'add_comment' in request.POST:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = Comment.objects.create(
+                    category='video', 
+                    foreign_id=video_id,
+                    comment=form.cleaned_data['comment'],
+                    reg_datetime=datetime.datetime.now()
+                )
+                return redirect('video', video_id=video_id)
+
+    comment_form = CommentForm()
+    # search_form = SearchForm()
+    # video_list = channel.video_set.all()
+
+    context = {
+        'video': video ,
+        # 'channel': channel, 
+        'comment_form': comment_form,
+        # 'message': message,
+        # 'search_form': search_form,
+        # 'search_result': search_result,
+    }
+
+    return render(request, 'jack/video.html', context)
