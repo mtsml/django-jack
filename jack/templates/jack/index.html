@@ -1,64 +1,49 @@
 {% extends 'jack/base.html' %}
 {% block content %}
     <div class="ui container">
-        <div class="ui two column stackable grid">
-            <div class="column">
-                <h2>Youtuberを探す</h2>
-                <form class="ui form" method="POST">
-                    {% csrf_token %}
-                    <div class="two fields">
-                        <div class="field">
-                            {{ search_form.query }}
-                        </div>
-                        <div class="field">
-                            <button class="ui button" name='search_channel' type="submit">検索</button>
-                        </div>
-                    </div>
-                </form>
-
-                {% for result in search_result %}
-                    <div class='ui item'>
-                        <a href="https://youtube.com/channel/{{ result.id.channelId }}" target="_blank">
-                            <img
-                                class="ui left floated circular image" 
-                                src="{{ result.snippet.thumbnails.default.url }}" 
-                                alt="{{ result.snippet.title }}" 
-                            >
-                        </a>
-                        <h2 class="ui header">
-                            {{ result.snippet.title }}
-                            <div class="sub header">
-                                {{ result.snippet.description}}
-                            </div>
-                        </h2>
-                        <form action="{% url 'index' %}" class="ui form" method="POST">
-                            {% csrf_token %}
-                            <input name="channel_id" type="hidden" value="{{ result.id.channelId }}">
-                            <input name="channel_nm" type="hidden" value="{{ result.snippet.title }}">
-                            <button class="ui button" name='add_channel' type="submit">追加</button>
-                        </form>
-                    </div>
-                    {% if message %}
-                        <p>{{ message }}</p>
-                    {% endif %}    
-                    <div class="ui divider"></div>
+        <div class="ui three column stackable grid">
+            <div class="four wide column">
+                <h2>チャンネル一覧</h2>
+                {% for channel in channel_list %}
+                <h3>
+                    <a href="{% url 'channel' channel.channel_id %}">
+                        {{ channel.channel_nm }}
+                    </a>
+                </h3>
+                <div class="ui divider"></div>
                 {% endfor %}
             </div>
 
-            <div class="column">
-                <h2>おすすめYoutuber</h2>
-                {% if channel_list %}        
-                    {% for channel in channel_list %}
-                        <h2>
-                            <a href="{% url 'channel' channel.channel_id %}">
-                                {{ channel.channel_nm }}
-                            </a>
-                        </h2>
-                        <div class="ui divider"></div>
-                    {% endfor %}
-                {% else %}
-                    <p class="ui message">No Recomended Youtuber.</p>
-                {% endif %}      
+            <div class="six wide column">
+                <h2>最新の動画</h2>
+                {% for video in video_list %}
+                <div class="ui segment">
+                    <div class="ui embed">
+                        <iframe width="560" height="315" 
+                            src="https://www.youtube.com/embed/{{ video.video_id }}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="six wide column">
+                <h2>人気の動画</h2>
+                {% for video in video_list %}
+                <div class="ui segment">
+                    <div class="ui embed">
+                        <iframe width="560" height="315" 
+                            src="https://www.youtube.com/embed/{{ video.video_id }}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

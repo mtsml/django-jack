@@ -3,4 +3,28 @@
         <i class="red youtube icon"></i>
         <a href="{% url 'index' %}">Django Jack</a>
     </div>
+    {% if channel %}
+        <div class="center item">
+            <h1>
+                <a href="https://youtube.com/channel/{{ channel.channel_id }}/" target="_blank">
+                    {{ channel.channel_nm }}
+                </a>
+            </h1>
+        </div>
+    {% endif %}
+    <div class="right menu">
+        <div class="item">
+            <form class="ui form" action="{% url 'search' %}" method="POST">
+                {% csrf_token %}
+                <div class="two fields">
+                    <div class="field">
+                        {{ search_form.query }}
+                    </div>
+                    <div class="field">
+                        <button class="ui button" name='search_channel' type="submit">検索</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
