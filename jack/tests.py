@@ -11,7 +11,9 @@ CHANNEL_NM = '東海オンエア'
 CHANNEL_ID_INVALID = 'TokaiOnAirJanai'
 CHANNEL_NM_INVALID = '東海オンエアじゃない'
 VIDEO_ID = 'mP6WW_BHsaA'
+VIDEO_NM = 'ラタトゥイユ'
 COMMENT = 'カントゥーヤ！'
+THUMBNAILS_URL = 'url'
 
 
 class IndexViewTests(TestCase):
@@ -26,19 +28,24 @@ class IndexViewTests(TestCase):
             [f'<Channel: {CHANNEL_ID}>']
         )
 
-    def test_add_exist_channel(self):
+    def test_display_video(self):
         """
-        既に塘路作されているチャンネルを追加の場合は、テーブルにオブジェクトが追加しない
+        テーブルに動画が存在する場合は、動画の一覧が表示される
+        最新動画（new_video_list）: 登録日の降順
+        人気動画（popular_video_list）: コメント数の降順
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        response = self.client.post('/', {
-            'channel_id': CHANNEL_ID, 
-            'channel_nm': CHANNEL_NM,
-            'add_channel': ['']
-        })
+        video1 = channel.video_set.create(video_id=VIDEO_ID, video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
+        video2 = channel.video_set.create(video_id=f'{VIDEO_ID}2', video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
+        comment = Comment.objects.create(category='video', foreign_id=VIDEO_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
+        response = self.client.get(reverse('index'))
         self.assertQuerysetEqual(
-            Channel.objects.all(),
-            [f'<Channel: {CHANNEL_ID}>']
+            response.context['new_video_list'], 
+            [f'<Video: {VIDEO_ID}2>', f'<Video: {VIDEO_ID}>']
+        )
+        self.assertQuerysetEqual(
+            response.context['popular_video_list'], 
+            [f'<Video: {VIDEO_ID}>', f'<Video: {VIDEO_ID}2>']
         )
 
 
@@ -47,9 +54,10 @@ class SearchViewTests(TestCase):
         """
         チャンネルを追加すると、テーブルにオブジェクトが追加される
         """
-        response = self.client.post('/search/', {
+        response = self.client.post(reverse('search'), {
             'channel_id': CHANNEL_ID, 
             'channel_nm': CHANNEL_NM,
+            'thumbnails_url': THUMBNAILS_URL,
             'add_channel': ['']
         })
         self.assertQuerysetEqual(
@@ -62,9 +70,10 @@ class SearchViewTests(TestCase):
         既に作成されているチャンネルの場合は、テーブルにオブジェクトを追加しない
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        response = self.client.post('/search/', {
+        response = self.client.post(reverse('search'), {
             'channel_id': CHANNEL_ID, 
             'channel_nm': CHANNEL_NM,
+            'thumbnails_url': THUMBNAILS_URL,
             'add_channel': ['']
         })
         self.assertQuerysetEqual(
@@ -78,7 +87,7 @@ class ChannelViewTests(TestCase):
         """
         テーブルにチャンネルが存在しない場合は、404エラー
         """
-        response = self.client.get(f'/channel/{CHANNEL_ID_INVALID}/')
+        response = self.client.get(reverse('channel', args=[CHANNEL_ID]))
         self.assertEqual(response.status_code, 404)
 
     def test_display_channel(self):
@@ -86,7 +95,7 @@ class ChannelViewTests(TestCase):
         テーブルにチャンネルが存在する場合は、チャンネルの詳細が表示される
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        response = self.client.get(f'/channel/{CHANNEL_ID}/')
+        response = self.client.get(reverse('channel', args=[CHANNEL_ID]))
         self.assertQuerysetEqual(
             [response.context['channel']], 
             [f'<Channel: {CHANNEL_ID}>']
@@ -95,24 +104,34 @@ class ChannelViewTests(TestCase):
     def test_display_video(self):
         """
         テーブルにチャンネルに紐づくビデオが存在する場合は、ビデオの一覧が表示される
+        最新動画（new_video_list）: 登録日の降順
+        人気動画（popular_video_list）: コメント数の降順
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        video = channel.video_set.create(video_id=VIDEO_ID)
-        response = self.client.get(f'/channel/{CHANNEL_ID}/')
+        channel2 = Channel.objects.create(channel_id=f'{CHANNEL_ID}2', channel_nm=CHANNEL_NM)
+        video1 = channel.video_set.create(video_id=VIDEO_ID, video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
+        video2 = channel.video_set.create(video_id=f'{VIDEO_ID}2', video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
+        video3 = channel2.video_set.create(video_id=f'{VIDEO_ID}3', video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
+        comment = Comment.objects.create(category='video', foreign_id=VIDEO_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
+        response = self.client.get(reverse('channel', args=[CHANNEL_ID]))
         self.assertQuerysetEqual(
-            response.context['video_list'], 
-            [f'<Video: {VIDEO_ID}>']
+            response.context['new_video_list'], 
+            [f'<Video: {VIDEO_ID}2>', f'<Video: {VIDEO_ID}>']
+        )
+        self.assertQuerysetEqual(
+            response.context['popular_video_list'], 
+            [f'<Video: {VIDEO_ID}>', f'<Video: {VIDEO_ID}2>']
         )
 
-    def test_display_channel_comment(self):
-        """
-        チャンネルに紐づくコメントが存在する場合は、コメントの一覧が表示される
-        """
-        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        video = channel.video_set.create(video_id=VIDEO_ID)
-        comment = Comment.objects.create(category='channel', foreign_id=CHANNEL_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
-        response = self.client.get(f'/channel/{CHANNEL_ID}/')
-        self.assertContains(response, COMMENT)
+    # def test_display_channel_comment(self):
+    #     """
+    #     チャンネルに紐づくコメントが存在する場合は、コメントの一覧が表示される
+    #     """
+    #     channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
+    #     video = channel.video_set.create(video_id=VIDEO_ID)
+    #     comment = Comment.objects.create(category='channel', foreign_id=CHANNEL_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
+    #     response = self.client.get(reverse('channel', args=[CHANNEL_ID]))
+    #     self.assertContains(response, COMMENT)
 
     def test_add_channel_comment(self):
         """
@@ -120,7 +139,7 @@ class ChannelViewTests(TestCase):
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
         video = channel.video_set.create(video_id=VIDEO_ID)
-        response = self.client.post(f'/channel/{CHANNEL_ID}/', {
+        response = self.client.post(reverse('channel', args=[CHANNEL_ID]), {
             'comment': COMMENT,
             'add_comment': ['']
         })
@@ -135,7 +154,7 @@ class VideoViewTests(TestCase):
         """
         テーブルに動画が存在しない場合は、404エラー
         """
-        response = self.client.get(f'/video/{VIDEO_ID}/')
+        response = self.client.get(reverse('video', args=[VIDEO_ID]))
         self.assertEqual(response.status_code, 404)
 
     def test_display_video(self):
@@ -144,7 +163,7 @@ class VideoViewTests(TestCase):
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
         video = channel.video_set.create(video_id=VIDEO_ID)
-        response = self.client.get(f'/video/{VIDEO_ID}/')
+        response = self.client.get(reverse('video', args=[VIDEO_ID]))
         self.assertQuerysetEqual(
             [response.context['video']], 
             [f'<Video: {VIDEO_ID}>']
@@ -157,7 +176,7 @@ class VideoViewTests(TestCase):
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
         video = channel.video_set.create(video_id=VIDEO_ID)
         comment = Comment.objects.create(category='video', foreign_id=VIDEO_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
-        response = self.client.get(f'/video/{VIDEO_ID}/')
+        response = self.client.get(reverse('video', args=[VIDEO_ID]))
         self.assertContains(response, COMMENT)
 
     def test_add_video_comment(self):
@@ -166,7 +185,7 @@ class VideoViewTests(TestCase):
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
         video = channel.video_set.create(video_id=VIDEO_ID)
-        response = self.client.post(f'/video/{VIDEO_ID}/', {
+        response = self.client.post(reverse('video', args=[VIDEO_ID]), {
             'comment': COMMENT,
             'add_comment': ['']
         })
