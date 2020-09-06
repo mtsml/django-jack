@@ -19,11 +19,11 @@
                                 {{ channel.description }}
                             </div>
                         </h2>
-                        <form action="{% url 'search' %}" class="ui form" method="POST">
+                        <form action="{% url 'search' %}" class="add-form ui form" method="POST">
                             {% csrf_token %}
                             <input name="channel_id" type="hidden" value="{{ channel.channel_id }}">
                             <input name="channel_nm" type="hidden" value="{{ channel.channel_nm }}">
-                            <button class="ui button" name='add_channel' type="submit"
+                            <button class="add-btn ui button" name='add_channel' type="submit"
                                 {% if channel.registered %}disabled{% endif %}
                             >
                                 追加
@@ -51,11 +51,11 @@
                                 {{ video.description }}
                             </div>
                         </h2>
-                        <form action="{% url 'search' %}" class="ui form" method="POST">
+                        <form action="{% url 'search' %}" class="add-form ui form" method="POST">
                             {% csrf_token %}
                             <input name="channel_id" type="hidden" value="{{ video.channel_id }}">
                             <input name="video_id" type="hidden" value="{{ video.video_id }}">
-                            <button class="ui button" name='add_video' type="submit"
+                            <button class="add-btn ui button" name='add_video' type="submit"
                                 {% if video.registered %}disabled{% endif %}
                             >
                                 追加
@@ -66,4 +66,31 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(".add-form").submit(function(event) {
+            event.preventDefault();
+            var form = $(this);
+            var data = form.serialize()
+                + '&'
+                + encodeURI(form.children('.add-btn').prop('name'))
+                + '='
+                + encodeURI(form.children('.add-btn').prop('value'))
+            console.log(data)
+            $.ajax({
+                url: form.prop("action"),
+                method: form.prop("method"),
+                data: data,
+                timeout: 10000,
+                dataType: "text",
+            })
+            .done(function(data) {
+                console.log(data)
+                form.children('.add-btn').prop('disabled', true);
+            })
+            .fail(function(data) {
+                alert("失敗しました");
+            })
+        });
+    </script>
 {% endblock %}
