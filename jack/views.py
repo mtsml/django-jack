@@ -101,7 +101,7 @@ def channel(request, channel_id):
                     'comment_list': comment_list
                 }
                 if request.is_ajax():
-                    html = render_to_string('jack/component/comment_list.html', context, request=request)
+                    html = render_to_string('jack/component/comment.html', context, request=request)
                     return JsonResponse({'form': html}) 
 
     channel_list = Channel.objects.all()
@@ -145,7 +145,7 @@ def video(request, video_id):
                     'comment_list': comment_list
                 }
                 if request.is_ajax():
-                    html = render_to_string('jack/component/comment_list.html', context, request=request)
+                    html = render_to_string('jack/component/comment.html', context, request=request)
                     return JsonResponse({'form': html}) 
 
     channel_list = Channel.objects.all()

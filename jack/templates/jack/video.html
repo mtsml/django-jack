@@ -28,7 +28,7 @@
                 <h3>
                     動画へのコメント
                 </h3>
-                {% include "jack/component/comment_list.html" with category="video" foreign_id=video.video_id comment_form=comment_form comment_list=video.get_comment_list %}
+                {% include "jack/component/comment.html" with category="video" foreign_id=video.video_id comment_form=comment_form comment_list=video.get_comment_list %}
             </div>
         </div>
     </div>
