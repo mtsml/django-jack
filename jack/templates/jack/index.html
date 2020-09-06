@@ -16,33 +16,41 @@
 
             <div class="six wide column">
                 <h2>最新の動画</h2>
-                {% for video in video_list %}
-                <div class="ui segment">
-                    <div class="ui embed">
-                        <iframe width="560" height="315" 
-                            src="https://www.youtube.com/embed/{{ video.video_id }}" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
+                {% for video in new_video_list %}
+                    <div class="ui segment">
+                        <div class='ui item'>
+                            <img
+                                class="ui left floated image" 
+                                src="{{ video.thumbnails_url }}" 
+                                alt="{{ video.video_nm }}" 
+                            >
+                            <h2 class="ui header">
+                                <a href="{% url 'video' video.video_id %}">
+                                    {{ video.video_nm }}
+                                </a>
+                            </h2>
+                        </div>
                     </div>
-                </div>
                 {% endfor %}
             </div>
 
             <div class="six wide column">
                 <h2>人気の動画</h2>
-                {% for video in video_list %}
-                <div class="ui segment">
-                    <div class="ui embed">
-                        <iframe width="560" height="315" 
-                            src="https://www.youtube.com/embed/{{ video.video_id }}" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
+                {% for video in popular_video_list %}
+                    <div class="ui segment">
+                        <div class='ui item'>
+                            <img
+                                class="ui left floated image" 
+                                src="{{ video.thumbnails_url }}" 
+                                alt="{{ video.video_nm }}" 
+                            >
+                            <h2 class="ui header">
+                                <a href="{% url 'video' video.video_id %}">
+                                    {{ video.video_nm }}
+                                </a>
+                            </h2>
+                        </div>
                     </div>
-                </div>
                 {% endfor %}
             </div>
         </div>

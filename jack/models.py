@@ -4,7 +4,7 @@ from django.db import models
 class Channel(models.Model):
     channel_id = models.CharField(max_length=200) # TODO:チャンネルIDの最大文字数を調べる
     channel_nm = models.CharField(max_length=200)
-    thumbnails = models.CharField(max_length=3000, null=True)
+    thumbnails_url = models.CharField(max_length=3000, null=True)
     reg_datetime = models.DateTimeField(null=True)
 
     def __str__(self):
@@ -18,8 +18,8 @@ class Channel(models.Model):
 
 
 class Video(models.Model):
-    channel_id = models.ForeignKey(Channel, on_delete=models.CASCADE)
     video_id = models.CharField(max_length=200)
+    channel_id = models.ForeignKey(Channel, on_delete=models.CASCADE)
     video_nm = models.CharField(max_length=200)
     thumbnails_url = models.CharField(max_length=3000, null=True)
     reg_datetime = models.DateTimeField(null=True)
@@ -29,6 +29,24 @@ class Video(models.Model):
 
     def is_video_id_exists(video_id):
         return Video.objects.filter(video_id=video_id).exists()
+
+    def get_new_video_list(cnt):
+        return Video.objects.order_by('-reg_datetime').all()[:cnt]
+
+    def get_popular_video_list(cnt):
+        # TODO: パフォーマンスのボトルネック
+        video_list = Video.objects.raw(f"""
+            SELECT
+                id
+        	    ,video_id
+	            ,channel_id_id
+                ,video_nm
+                ,thumbnails_url
+	            ,(SELECT COUNT(*) FROM jack_comment WHERE category = 'video' AND foreign_id = video_id) AS cnt
+            FROM jack_video
+            ORDER BY cnt DESC
+            LIMIT {cnt};""")
+        return video_list
 
     def get_comment_list(self):
         return Comment.objects.filter(category='video', foreign_id=self.video_id).order_by('-reg_datetime')

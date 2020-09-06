@@ -12,13 +12,15 @@ from .youtube import search_youtube
 
 def index(request):
     channel_list = Channel.objects.all()
-    video_list = Video.objects.all()
+    new_video_list = Video.get_new_video_list(5)
+    popular_video_list = Video.get_popular_video_list(5)
     search_form = SearchForm()
 
     context = {
         'channel_list': channel_list,
         'search_form': search_form,
-        'video_list': video_list
+        'new_video_list': new_video_list,
+        'popular_video_list': popular_video_list
     }
 
     return render(request, 'jack/index.html', context)
@@ -32,16 +34,29 @@ def search(request):
         if 'add_channel' in request.POST:
             channel_id = request.POST['channel_id']
             channel_nm = request.POST['channel_nm']
+            thumbnails_url = request.POST['thumbnails_url']
             if not Channel.is_channel_id_exists(channel_id):
-                channel = Channel.objects.create(channel_id=channel_id, channel_nm=channel_nm)
+                channel = Channel.objects.create(
+                    channel_id=channel_id, 
+                    channel_nm=channel_nm,
+                    thumbnails_url=thumbnails_url,
+                    reg_datetime=datetime.datetime.now()
+                )
             return JsonResponse({})
 
         elif 'add_video' in request.POST:
             video_id = request.POST['video_id']
             channel_id = request.POST['channel_id']
+            video_nm = request.POST['video_nm']
+            thumbnails_url = request.POST['thumbnails_url']
             channel = get_object_or_404(Channel, channel_id=channel_id)
             if not Video.is_video_id_exists(video_id):
-                channel.video_set.create(video_id=video_id)
+                channel.video_set.create(
+                    video_id=video_id,
+                    video_nm=video_nm,
+                    thumbnails_url=thumbnails_url,
+                    reg_datetime=datetime.datetime.now()
+                )
             return JsonResponse({})
 
         elif 'search' in request.POST:
