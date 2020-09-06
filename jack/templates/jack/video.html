@@ -3,15 +3,7 @@
     <div class="ui container">
         <div class="ui two column stackable grid">
             <div class="four wide column">
-                <h2>チャンネル一覧</h2>
-                {% for channel in channel_list %}
-                <h3>
-                    <a href="{% url 'channel' channel.channel_id %}">
-                        {{ channel.channel_nm }}
-                    </a>
-                </h3>
-                <div class="ui divider"></div>
-                {% endfor %}
+                {% include "jack/component/channel.html" with channel_list=channel_list %}
             </div>
 
             <div class="twelve wide column">

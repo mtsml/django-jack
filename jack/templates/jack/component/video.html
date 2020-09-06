@@ -1,0 +1,19 @@
+<div class='video-list'>
+    <h2>{{ title }}</h2>
+    <div class="ui divided items">
+        {% for video in video_list %}
+            <div class="item">
+                <div class="ui image">
+                    <img src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}" >
+                </div>
+                <div class="top aligned content">
+                    <h3 class="ui header">
+                        <a href="{% url 'video' video.video_id %}">
+                            {{ video.video_nm }}
+                        </a>
+                    </h3>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

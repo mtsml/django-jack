@@ -3,21 +3,13 @@
     <div class="ui container">
         <div class="ui three column stackable grid">
             <div class="four wide column">
-                <h2>チャンネル一覧</h2>
-                {% for channel in channel_list %}
-                <h3>
-                    <a href="{% url 'channel' channel.channel_id %}">
-                        {{ channel.channel_nm }}
-                    </a>
-                </h3>
-                <div class="ui divider"></div>
-                {% endfor %}
+                {% include "jack/component/channel.html" with channel_list=channel_list %}
             </div>
 
             <div class="six wide column">
                 <h2>チャンネルの検索結果</h2>
                 <div class="ui divided items">
-                    {% for channel in channel_list %}
+                    {% for channel in search_channel_list %}
                         <div class='ui item'>
                             <div class="ui circular image">
                                 <a href="https://youtube.com/channel/{{ channel.channel_id }}" target="_blank">
@@ -50,7 +42,7 @@
             <div class="six wide column">
                 <h2>動画の検索結果</h2>
                 <div class="ui divided items">
-                    {% for video in video_list %}
+                    {% for video in search_video_list %}
                         <div class='ui item'>
                             <div class="ui image">
                                 <a href="https://youtube.com/video/{{ video.video_id }}" target="_blank">
@@ -82,4 +74,30 @@
             </div>
         </div>
     </div>
+    <script>
+        $(".add-form").submit(function(event) {
+            event.preventDefault();
+            var form = $(this);
+            var data = form.serialize()
+                + '&'
+                + encodeURI(form.find('.add-btn').prop('name'))
+                + '='
+                + encodeURI(form.find('.add-btn').prop('value'))
+            console.log(data)
+            $.ajax({
+                url: form.prop("action"),
+                method: form.prop("method"),
+                data: data,
+                timeout: 10000,
+                dataType: "text",
+            })
+            .done(function(data) {
+                var res = JSON.parse(data)
+                form.children('.add-btn').prop('disabled', true);                    
+            })
+            .fail(function(data) {
+                alert("失敗しました");
+            })
+        });
+    </script>
 {% endblock %}

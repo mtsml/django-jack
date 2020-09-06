@@ -54,28 +54,3 @@ def search_youtube(query):
         'video_list': video_list
     }
     return result
-
-
-def search_channel(query):
-    youtube = youtube_build()
-
-    response = youtube.search().list(
-        part="id,snippet",
-        q=query,
-        type='channel'
-    ).execute()
-
-    return response["items"]
-
-
-def search_video_in_channel(channel_id, query):
-    youtube = youtube_build()
-
-    response = youtube.search().list(
-        channelId=channel_id,
-        part="id,snippet",
-        q=query,
-        type='video'
-    ).execute()
-
-    return response["items"]

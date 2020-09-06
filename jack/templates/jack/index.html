@@ -3,55 +3,15 @@
     <div class="ui container">
         <div class="ui three column stackable grid">
             <div class="four wide column">
-                <h2>チャンネル一覧</h2>
-                {% for channel in channel_list %}
-                <h3>
-                    <a href="{% url 'channel' channel.channel_id %}">
-                        {{ channel.channel_nm }}
-                    </a>
-                </h3>
-                <div class="ui divider"></div>
-                {% endfor %}
+                {% include "jack/component/channel.html" with channel_list=channel_list %}
             </div>
 
             <div class="six wide column">
-                <h2>最新の動画</h2>
-                <div class="ui divided items">
-                    {% for video in new_video_list %}
-                        <div class="item">
-                            <div class="ui image">
-                                <img src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}" >
-                            </div>
-                            <div class="top aligned content">
-                                <h3 class="ui header">
-                                    <a href="{% url 'video' video.video_id %}">
-                                        {{ video.video_nm }}
-                                    </a>
-                                </h3>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                {% include "jack/component/video.html" with title="最新の動画" video_list=new_video_list %}
             </div>
 
             <div class="six wide column">
-                <h2>人気の動画</h2>
-                <div class="ui divided items">
-                    {% for video in popular_video_list %}
-                        <div class="item">
-                            <div class="ui image">
-                                <img src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}" >
-                            </div>
-                            <div class="top aligned content">
-                                <h3 class="ui header">
-                                    <a href="{% url 'video' video.video_id %}">
-                                        {{ video.video_nm }}
-                                    </a>
-                                </h3>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                {% include "jack/component/video.html" with title="人気の動画" video_list=popular_video_list %}
             </div>
         </div>
     </div>

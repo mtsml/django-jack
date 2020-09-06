@@ -27,8 +27,8 @@ def index(request):
 
 
 def search(request):
-    channel_list = []
-    video_list = []
+    search_channel_list = []
+    search_video_list = []
 
     if request.method == 'POST':
         if 'add_channel' in request.POST:
@@ -64,15 +64,17 @@ def search(request):
             if form.is_valid():
                 query = form.cleaned_data['query']
                 search_result = search_youtube(query)
-                channel_list = search_result["channel_list"]
-                video_list = search_result["video_list"]
+                search_channel_list = search_result["channel_list"]
+                search_video_list = search_result["video_list"]
 
+    channel_list = Channel.objects.all()
     search_form = SearchForm()
 
     context = {
         'channel_list': channel_list,
+        'search_channel_list': search_channel_list,
         'search_form': search_form,
-        'video_list': video_list
+        'search_video_list': search_video_list
     }
 
     return render(request, 'jack/search.html', context)
