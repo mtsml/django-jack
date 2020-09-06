@@ -1,8 +1,8 @@
 import datetime
-import json
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse
 
 from .forms import CommentForm, SearchForm
@@ -12,8 +12,8 @@ from .youtube import search_youtube
 
 def index(request):
     channel_list = Channel.objects.all()
-    new_video_list = Video.get_new_video_list(5)
-    popular_video_list = Video.get_popular_video_list(5)
+    new_video_list = Video.get_new_video_list(5, None)
+    popular_video_list = Video.get_popular_video_list(5, None)
     search_form = SearchForm()
 
     context = {
@@ -92,18 +92,28 @@ def channel(request, channel_id):
                     comment=comment_text,
                     reg_datetime=datetime.datetime.now()
                 )
-                data = {'comment': comment_text}
-                return JsonResponse(data, safe=False)
+                comment_form = CommentForm()
+                context = {
+                    'category': 'channel',
+                    'foreign_id': channel_id,
+                    'comment_form': comment_form
+                }
+                html = render_to_string('jack/comment.html', context, request=request)
+                return JsonResponse({'form': html, 'comment': comment_text}) 
 
+    channel_list = Channel.objects.all()
     comment_form = CommentForm()
+    new_video_list = Video.get_new_video_list(5, channel_id)
+    popular_video_list = Video.get_popular_video_list(5, channel_id)
     search_form = SearchForm()
-    video_list = channel.video_set.all()
 
     context = {
         'channel': channel, 
+        'channel_list': channel_list,
         'comment_form': comment_form,
+        'new_video_list': new_video_list,
+        'popular_video_list': popular_video_list,
         'search_form': search_form,
-        'video_list': video_list
     }
 
     return render(request, 'jack/channel.html', context)
@@ -119,19 +129,29 @@ def video(request, video_id):
         if 'add_comment' in request.POST:
             form = CommentForm(request.POST)
             if form.is_valid():
+                comment_text = form.cleaned_data['comment']       
                 comment = Comment.objects.create(
                     category='video', 
                     foreign_id=video_id,
-                    comment=form.cleaned_data['comment'],
+                    comment=comment_text,
                     reg_datetime=datetime.datetime.now()
                 )
-                return redirect('video', video_id=video_id)
+                comment_form = CommentForm()
+                context = {
+                    'category': 'video',
+                    'foreign_id': video_id,
+                    'comment_form': comment_form
+                }
+                html = render_to_string('jack/comment.html', context, request=request)
+                return JsonResponse({'form': html, 'comment': comment_text}) 
 
+    channel_list = Channel.objects.all()
     comment_form = CommentForm()
     search_form = SearchForm()
 
     context = {
         'video': video ,
+        'channel_list': channel_list,
         'comment_form': comment_form,
         'search_form': search_form
     }

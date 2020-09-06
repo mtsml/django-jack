@@ -30,12 +30,19 @@ class Video(models.Model):
     def is_video_id_exists(video_id):
         return Video.objects.filter(video_id=video_id).exists()
 
-    def get_new_video_list(cnt):
-        return Video.objects.order_by('-reg_datetime').all()[:cnt]
+    # pythonではオーバーロードができなかったので必須でないchannel_idを引数に取る
+    def get_new_video_list(cnt, channel_id):
+        if channel_id:
+            channel = Channel.objects.get(channel_id=channel_id)
+            return Video.objects.filter(channel_id=channel.id).order_by('-reg_datetime').all()[:cnt]
+        else:
+            return Video.objects.order_by('-reg_datetime').all()[:cnt]
 
-    def get_popular_video_list(cnt):
+    def get_popular_video_list(cnt, channel_id):
         # TODO: パフォーマンスのボトルネック
-        video_list = Video.objects.raw(f"""
+        if channel_id:
+            channel = Channel.objects.get(channel_id=channel_id)
+        sql = f"""
             SELECT
                 id
         	    ,video_id
@@ -44,8 +51,11 @@ class Video(models.Model):
                 ,thumbnails_url
 	            ,(SELECT COUNT(*) FROM jack_comment WHERE category = 'video' AND foreign_id = video_id) AS cnt
             FROM jack_video
+            {f"WHERE channel_id_id = {channel.id}" if channel_id else ''}
             ORDER BY cnt DESC
-            LIMIT {cnt};""")
+            LIMIT {cnt};"""
+        print(sql)
+        video_list = Video.objects.raw(sql)
         return video_list
 
     def get_comment_list(self):

@@ -37,7 +37,8 @@
             .done(function(data) {
                 var res = JSON.parse(data)
                 if (res.comment) {
-                    form.find('input').val("");
+                    console.log(res)
+                    form.html(res['form']);
                     form.after(`<p>${res.comment}</p>`);
                 } else {
                     form.children('.add-btn').prop('disabled', true);                    

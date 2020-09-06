@@ -11,6 +11,14 @@
                 </a>
             </h1>
         </div>
+    {% elif video %}
+        <div class="center item">
+            <h1>
+                <a href="https://youtube.com/video/{{ video.video_id }}/" target="_blank">
+                    {{ video.video_nm }}
+                </a>
+            </h1>
+        </div>
     {% endif %}
     <div class="right menu">
         <div class="item">

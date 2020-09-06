@@ -3,38 +3,52 @@
     <div class="ui container">
         <div class="ui two column stackable grid">
             <div class="four wide column">
-                <h2>コメント</h2>
-                <div class='ui item'>
-                    <form class="add-form ui form" action="{% url 'channel' channel.channel_id %}" method="POST">
-                        {% csrf_token %}
-                        <div class="two fields">
-                            <div class="field">
-                                {{ comment_form.comment }}
-                            </div>
-                            <div class="field">
-                                <button class="add-btn ui button" name="add_comment" type="submit">追加</button>
-                            </div>
-                        </div>
-                    </form>
-                    {% for comment in channel.get_comment_list %}
-                        <p>{{ comment.comment }}</p>
-                    {% endfor %}            
-                </div>
+                <h2>チャンネル一覧</h2>
+                {% for channel in channel_list %}
+                <h3>
+                    <a href="{% url 'channel' channel.channel_id %}">
+                        {{ channel.channel_nm }}
+                    </a>
+                </h3>
+                <div class="ui divider"></div>
+                {% endfor %}
             </div>
 
-            <div class="twelve wide column">
-                <h2>
-                    おすすめ動画
-                </h2>
-                {% for video in video_list %}
+            <div class="six wide column">
+                <h2>最新の動画</h2>
+                {% for video in new_video_list %}
                     <div class="ui segment">
-                        <div class="ui embed">
-                            <iframe width="560" height="315" 
-                                src="https://www.youtube.com/embed/{{ video.video_id }}" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
-                            </iframe>
+                        <div class='ui item'>
+                            <img
+                                class="ui left floated image" 
+                                src="{{ video.thumbnails_url }}" 
+                                alt="{{ video.video_nm }}" 
+                            >
+                            <h2 class="ui header">
+                                <a href="{% url 'video' video.video_id %}">
+                                    {{ video.video_nm }}
+                                </a>
+                            </h2>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="six wide column">
+                <h2>人気の動画</h2>
+                {% for video in popular_video_list %}
+                    <div class="ui segment">
+                        <div class='ui item'>
+                            <img
+                                class="ui left floated image" 
+                                src="{{ video.thumbnails_url }}" 
+                                alt="{{ video.video_nm }}" 
+                            >
+                            <h2 class="ui header">
+                                <a href="{% url 'video' video.video_id %}">
+                                    {{ video.video_nm }}
+                                </a>
+                            </h2>
                         </div>
                     </div>
                 {% endfor %}
