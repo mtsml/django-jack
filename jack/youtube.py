@@ -35,7 +35,6 @@ def search_youtube(query):
                 'channel_id': item["id"]["channelId"],
                 'thumbnails_url': item["snippet"]["thumbnails"]["default"]["url"],
                 'channel_nm': item["snippet"]["title"],
-                'description': item["snippet"]["description"],
                 'registered': registered
             })
         elif item["id"]["kind"] == "youtube#video":
@@ -46,7 +45,6 @@ def search_youtube(query):
                 'video_id': item["id"]["videoId"],
                 'thumbnails_url': item["snippet"]["thumbnails"]["default"]["url"],
                 'video_nm': item["snippet"]["title"],
-                'description': item["snippet"]["description"],
                 'channel_id': item["snippet"]["channelId"],
                 'registered': registered
             })

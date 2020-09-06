@@ -54,7 +54,6 @@ class Video(models.Model):
             {f"WHERE channel_id_id = {channel.id}" if channel_id else ''}
             ORDER BY cnt DESC
             LIMIT {cnt};"""
-        print(sql)
         video_list = Video.objects.raw(sql)
         return video_list
 
