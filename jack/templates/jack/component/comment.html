@@ -15,7 +15,7 @@
             <p>{{ comment.comment }}</p>
         {% endfor %}
         <script>
-            $(".comment-form").submit(function(event) {
+            $(document).on("submit", ".comment-form", function(event) {
                 event.preventDefault();
                 var form = $(this);
                 var data = form.serialize()
@@ -23,7 +23,6 @@
                     + encodeURI(form.find('.add-btn').prop('name'))
                     + '='
                     + encodeURI(form.find('.add-btn').prop('value'))
-                console.log(data)
                 $.ajax({
                     url: form.prop("action"),
                     method: form.prop("method"),

@@ -66,18 +66,15 @@ def search(request):
                 search_result = search_youtube(query)
                 search_channel_list = search_result["channel_list"]
                 search_video_list = search_result["video_list"]
+                search_form = SearchForm()
 
-    channel_list = Channel.objects.all()
-    search_form = SearchForm()
+                context = {
+                    'search_channel_list': search_channel_list,
+                    'search_video_list': search_video_list
+                }
 
-    context = {
-        'channel_list': channel_list,
-        'search_channel_list': search_channel_list,
-        'search_form': search_form,
-        'search_video_list': search_video_list
-    }
-
-    return render(request, 'jack/search.html', context)
+                search_result_html = render_to_string('jack/search.html', context, request=request)
+                return JsonResponse({'search_result_html': search_result_html}) 
 
 
 def channel(request, channel_id):
