@@ -1,0 +1,11 @@
+<form class="add-form ui form" action="{% url category foreign_id %}" method="POST">
+    {% csrf_token %}
+    <div class="two fields">
+        <div class="field">
+            {{ comment_form.comment }}
+        </div>
+        <div class="field">
+            <button class="add-btn ui button" name="add_comment" type="submit">追加</button>
+        </div>
+    </div>
+</form>

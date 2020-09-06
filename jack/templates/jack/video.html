@@ -1,0 +1,48 @@
+{% extends 'jack/base.html' %}
+{% block content %}
+    <div class="ui container">
+        <div class="ui two column stackable grid">
+            <div class="four wide column">
+                <h2>チャンネル一覧</h2>
+                {% for channel in channel_list %}
+                <h3>
+                    <a href="{% url 'channel' channel.channel_id %}">
+                        {{ channel.channel_nm }}
+                    </a>
+                </h3>
+                <div class="ui divider"></div>
+                {% endfor %}
+            </div>
+
+            <div class="twelve wide column">
+                <div class="ui segment">
+                    <div class="ui embed">
+                        <iframe width="560" height="315" 
+                            src="https://www.youtube.com/embed/{{ video.video_id }}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+                <h3>
+                    動画へのコメント
+                </h3>
+                <form class="add-form ui form" action="{% url 'video' video.video_id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="two fields">
+                        <div class="field">
+                            {{ comment_form.comment }}
+                        </div>
+                        <div class="field">
+                            <button class="add-btn ui button" name="add_comment" type="submit">追加</button>
+                        </div>
+                    </div>
+                </form>
+                {% for comment in video.get_comment_list %}
+                    <p>{{ comment.comment }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
