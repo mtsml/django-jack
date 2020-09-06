@@ -4,6 +4,8 @@ from django.db import models
 class Channel(models.Model):
     channel_id = models.CharField(max_length=200) # TODO:チャンネルIDの最大文字数を調べる
     channel_nm = models.CharField(max_length=200)
+    thumbnails = models.CharField(max_length=3000, null=True)
+    reg_datetime = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.channel_id
@@ -18,6 +20,9 @@ class Channel(models.Model):
 class Video(models.Model):
     channel_id = models.ForeignKey(Channel, on_delete=models.CASCADE)
     video_id = models.CharField(max_length=200)
+    video_nm = models.CharField(max_length=200)
+    thumbnails_url = models.CharField(max_length=3000, null=True)
+    reg_datetime = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.video_id
@@ -33,7 +38,7 @@ class Comment(models.Model):
     category = models.CharField(max_length=200)
     foreign_id = models.CharField(max_length=200)
     comment = models.CharField(max_length=1000)
-    reg_datetime = models.DateTimeField()
+    reg_datetime = models.DateTimeField(null=True)
 
     def __str__(self):
         return f'{self.category}:{self.foreign_id}'
