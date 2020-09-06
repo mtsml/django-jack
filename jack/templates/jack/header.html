@@ -3,15 +3,13 @@
         <i class="red youtube icon"></i>
         <a href="{% url 'index' %}">Django Jack</a>
     </div>
-    {% if channel %}
-        <div class="center item">
-            <h1>
-                <a href="https://youtube.com/channel/{{ channel.channel_id }}/" target="_blank">
-                    {{ channel.channel_nm }}
-                </a>
-            </h1>
-        </div>
-    {% elif video %}
+    <div class="ui centered item">
+        <h1>
+            <a class="header-title" href="https://youtube.com/channel/{{ channel.channel_id }}/" target="_blank">
+            </a>
+        </h1>
+    </div>
+    {% if video %}
         <div class="center item">
             <h1>
                 <a href="https://youtube.com/video/{{ video.video_id }}/" target="_blank">
