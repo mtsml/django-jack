@@ -28,20 +28,7 @@
                 <h3>
                     動画へのコメント
                 </h3>
-                <form class="add-form ui form" action="{% url 'video' video.video_id %}" method="POST">
-                    {% csrf_token %}
-                    <div class="two fields">
-                        <div class="field">
-                            {{ comment_form.comment }}
-                        </div>
-                        <div class="field">
-                            <button class="add-btn ui button" name="add_comment" type="submit">追加</button>
-                        </div>
-                    </div>
-                </form>
-                {% for comment in video.get_comment_list %}
-                    <p>{{ comment.comment }}</p>
-                {% endfor %}
+                {% include "jack/component/comment_list.html" with category="video" foreign_id=video.video_id comment_form=comment_form comment_list=video.get_comment_list %}
             </div>
         </div>
     </div>

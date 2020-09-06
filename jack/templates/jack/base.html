@@ -36,10 +36,9 @@
             })
             .done(function(data) {
                 var res = JSON.parse(data)
-                if (res.comment) {
-                    console.log(res)
+                if (res['form']) {
+                    $('#comment-list').remove();
                     form.html(res['form']);
-                    form.after(`<p>${res.comment}</p>`);
                 } else {
                     form.children('.add-btn').prop('disabled', true);                    
                 }
