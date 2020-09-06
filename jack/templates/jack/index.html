@@ -2,17 +2,119 @@
 {% block content %}
     <div class="ui container">
         <div class="ui three column stackable grid">
-            <div class="four wide column">
+            <div class="side-channel-list four wide column">
                 {% include "jack/component/channel.html" with channel_list=channel_list %}
             </div>
 
-            <div class="six wide column">
+            <div class="new-video-list six wide column">
                 {% include "jack/component/video.html" with title="最新の動画" video_list=new_video_list %}
             </div>
 
-            <div class="six wide column">
+            <div class="popular-video-list six wide column">
                 {% include "jack/component/video.html" with title="人気の動画" video_list=popular_video_list %}
             </div>
         </div>
     </div>
+    <script>
+        $(document).on('click', '.channel-link', function(event) {
+            event.preventDefault();
+            var a = $(this);
+            $.ajax({
+                url: a.prop("href"),
+                timeout: 10000,
+                dataType: "text",
+            })
+            .done(function(data) {
+                var res = JSON.parse(data);
+                
+                // 動画画面から遷移時のための初期化処理
+                $('.video-player').remove();
+                $('.new-video-list').show();
+                $('.popular-video-list').show();
+                $('.search-channel-list').remove();
+                $('.search-video-list').remove();
+                
+                $('.header-title').text(a.text());
+                $('.new-video-list').html(res['new_video_html']);
+                $('.popular-video-list').html(res['popular_video_html']);
+            })
+            .fail(function(data) {
+                alert("深刻なエラーが発生しました。。。");
+            })
+        });
+        $(document).on('click', '.video-link', function(event) {
+            event.preventDefault();
+            var a = $(this);
+            $.ajax({
+                url: a.prop("href"),
+                timeout: 10000,
+                dataType: "text",
+            })
+            .done(function(data) {
+                var res = JSON.parse(data);
+                $('.new-video-list').empty().hide();
+                $('.popular-video-list').empty().hide();
+                $('.header-title').text(a.text());
+                $('.side-channel-list').after(res['video_player_html']);
+            })
+            .fail(function(data) {
+                alert("深刻なエラーが発生しました。。。");
+            })
+        });
+        $(document).on('submit', '.search-form', function(event) {
+            event.preventDefault();
+            var form = $(this);
+            var data = form.serialize()
+                + '&'
+                + encodeURI(form.find('.search-btn').prop('name'))
+                + '='
+                + encodeURI(form.find('.search-btn').prop('value'))
+            $.ajax({
+                url: form.prop("action"),
+                method: form.prop("method"),
+                data: data,
+                timeout: 10000,
+                dataType: "text",
+            })
+            .done(function(data) {
+                var res = JSON.parse(data);
+
+                // 画面遷移時の初期処理
+                $('.header-title').empty();
+                $('.video-player').remove();
+                $('.new-video-list').empty().hide();
+                $('.popular-video-list').empty().hide();
+                $('.search-channel-list').remove();
+                $('.search-video-list').remove();
+
+                $('.side-channel-list').after(res['search_result_html']);
+            })
+            .fail(function(data) {
+                alert("深刻なエラーが発生しました。。。");
+            })
+        });
+        $(document).on("submit", ".add-form", function(event) {
+            event.preventDefault();
+            var form = $(this);
+            var data = form.serialize()
+                + '&'
+                + encodeURI(form.find('.add-btn').prop('name'))
+                + '='
+                + encodeURI(form.find('.add-btn').prop('value'))
+            $.ajax({
+                url: form.prop("action"),
+                method: form.prop("method"),
+                data: data,
+                timeout: 10000,
+                dataType: "text",
+            })
+            .done(function(data) {
+                var res = JSON.parse(data)
+                form.children('.add-btn').prop('disabled', true);                    
+            })
+            .fail(function(data) {
+                alert("深刻なエラーが発生しました。。。");
+            })
+        });
+    </script>
 {% endblock %}

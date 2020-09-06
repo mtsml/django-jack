@@ -1,103 +1,66 @@
-{% extends 'jack/base.html' %}
-{% block content %}
-    <div class="ui container">
-        <div class="ui three column stackable grid">
-            <div class="four wide column">
-                {% include "jack/component/channel.html" with channel_list=channel_list %}
-            </div>
-
-            <div class="six wide column">
-                <h2>チャンネルの検索結果</h2>
-                <div class="ui divided items">
-                    {% for channel in search_channel_list %}
-                        <div class='ui item'>
-                            <div class="ui circular image">
-                                <a href="https://youtube.com/channel/{{ channel.channel_id }}" target="_blank">
-                                    <img src="{{ channel.thumbnails_url }}" alt="{{ channel.channel_nm }}">
-                                </a>
-                            </div>
-                            <div class="top aligned content">
-                                <div class="ui header">
-                                    {{ channel.channel_nm }}
-                                </div>
-                                <div class="extra">
-                                    <form action="{% url 'search' %}" class="add-form ui form" method="POST">
-                                        {% csrf_token %}
-                                        <input name="channel_id" type="hidden" value="{{ channel.channel_id }}">
-                                        <input name="channel_nm" type="hidden" value="{{ channel.channel_nm }}">
-                                        <input name="thumbnails_url" type="hidden" value="{{ channel.thumbnails_url }}">
-                                        <button class="add-btn ui right floated button" name='add_channel' type="submit"
-                                            {% if channel.registered %}disabled{% endif %}
-                                        >
-                                            追加
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+<div class="search-channel-list six wide column">
+    <h2>チャンネルの検索結果</h2>
+    <div class="ui divided items">
+        {% for channel in search_channel_list %}
+            <div class='ui item'>
+                <div class="ui circular image">
+                    <a href="https://youtube.com/channel/{{ channel.channel_id }}" target="_blank">
+                        <img src="{{ channel.thumbnails_url }}" alt="{{ channel.channel_nm }}">
+                    </a>
+                </div>
+                <div class="top aligned content">
+                    <div class="ui header">
+                        {{ channel.channel_nm }}
+                    </div>
+                    <div class="extra">
+                        <form action="{% url 'search' %}" class="add-form ui form" method="POST">
+                            {% csrf_token %}
+                            <input name="channel_id" type="hidden" value="{{ channel.channel_id }}">
+                            <input name="channel_nm" type="hidden" value="{{ channel.channel_nm }}">
+                            <input name="thumbnails_url" type="hidden" value="{{ channel.thumbnails_url }}">
+                            <button class="add-btn ui right floated button" name='add_channel' type="submit"
+                                {% if channel.registered %}disabled{% endif %}
+                            >
+                                追加
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-
-            <div class="six wide column">
-                <h2>動画の検索結果</h2>
-                <div class="ui divided items">
-                    {% for video in search_video_list %}
-                        <div class='ui item'>
-                            <div class="ui image">
-                                <a href="https://youtube.com/video/{{ video.video_id }}" target="_blank">
-                                    <img src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}">
-                                </a>
-                            </div>
-                            <div class="top aligned content">
-                                <div class="ui header">
-                                    {{ video.video_nm }}
-                                </div>
-                                <div class="extra">
-                                    <form action="{% url 'search' %}" class="add-form ui form" method="POST">
-                                        {% csrf_token %}
-                                        <input name="channel_id" type="hidden" value="{{ video.channel_id }}">
-                                        <input name="video_id" type="hidden" value="{{ video.video_id }}">
-                                        <input name="video_nm" type="hidden" value="{{ video.video_nm }}">
-                                        <input name="thumbnails_url" type="hidden" value="{{ video.thumbnails_url }}">
-                                        <button class="add-btn ui right floated button" name='add_video' type="submit"
-                                            {% if video.registered %}disabled{% endif %}
-                                        >
-                                            追加
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
-    <script>
-        $(".add-form").submit(function(event) {
-            event.preventDefault();
-            var form = $(this);
-            var data = form.serialize()
-                + '&'
-                + encodeURI(form.find('.add-btn').prop('name'))
-                + '='
-                + encodeURI(form.find('.add-btn').prop('value'))
-            console.log(data)
-            $.ajax({
-                url: form.prop("action"),
-                method: form.prop("method"),
-                data: data,
-                timeout: 10000,
-                dataType: "text",
-            })
-            .done(function(data) {
-                var res = JSON.parse(data)
-                form.children('.add-btn').prop('disabled', true);                    
-            })
-            .fail(function(data) {
-                alert("失敗しました");
-            })
-        });
-    </script>
-{% endblock %}
+</div>
+
+<div class="search-video-list six wide column">
+    <h2>動画の検索結果</h2>
+    <div class="ui divided items">
+        {% for video in search_video_list %}
+            <div class='ui item'>
+                <div class="ui image">
+                    <a href="https://youtube.com/video/{{ video.video_id }}" target="_blank">
+                        <img src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}">
+                    </a>
+                </div>
+                <div class="top aligned content">
+                    <div class="ui header">
+                        {{ video.video_nm }}
+                    </div>
+                    <div class="extra">
+                        <form action="{% url 'search' %}" class="add-form ui form" method="POST">
+                            {% csrf_token %}
+                            <input name="channel_id" type="hidden" value="{{ video.channel_id }}">
+                            <input name="video_id" type="hidden" value="{{ video.video_id }}">
+                            <input name="video_nm" type="hidden" value="{{ video.video_nm }}">
+                            <input name="thumbnails_url" type="hidden" value="{{ video.thumbnails_url }}">
+                            <button class="add-btn ui right floated button" name='add_video' type="submit"
+                                {% if video.registered %}disabled{% endif %}
+                            >
+                                追加
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.test import TestCase
 from django.urls import reverse
@@ -90,63 +91,27 @@ class ChannelViewTests(TestCase):
         response = self.client.get(reverse('channel', args=[CHANNEL_ID]))
         self.assertEqual(response.status_code, 404)
 
-    def test_display_channel(self):
-        """
-        テーブルにチャンネルが存在する場合は、チャンネルの詳細が表示される
-        """
-        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        response = self.client.get(reverse('channel', args=[CHANNEL_ID]))
-        self.assertQuerysetEqual(
-            [response.context['channel']], 
-            [f'<Channel: {CHANNEL_ID}>']
-        )
-    
-    def test_display_video(self):
-        """
-        テーブルにチャンネルに紐づくビデオが存在する場合は、ビデオの一覧が表示される
-        最新動画（new_video_list）: 登録日の降順
-        人気動画（popular_video_list）: コメント数の降順
-        """
-        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        channel2 = Channel.objects.create(channel_id=f'{CHANNEL_ID}2', channel_nm=CHANNEL_NM)
-        video1 = channel.video_set.create(video_id=VIDEO_ID, video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
-        video2 = channel.video_set.create(video_id=f'{VIDEO_ID}2', video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
-        video3 = channel2.video_set.create(video_id=f'{VIDEO_ID}3', video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
-        comment = Comment.objects.create(category='video', foreign_id=VIDEO_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
-        response = self.client.get(reverse('channel', args=[CHANNEL_ID]))
-        self.assertQuerysetEqual(
-            response.context['new_video_list'], 
-            [f'<Video: {VIDEO_ID}2>', f'<Video: {VIDEO_ID}>']
-        )
-        self.assertQuerysetEqual(
-            response.context['popular_video_list'], 
-            [f'<Video: {VIDEO_ID}>', f'<Video: {VIDEO_ID}2>']
-        )
-
-    # def test_display_channel_comment(self):
+    # def test_display_video(self):
     #     """
-    #     チャンネルに紐づくコメントが存在する場合は、コメントの一覧が表示される
+    #     テーブルにチャンネルに紐づくビデオが存在する場合は、ビデオの一覧が表示される
+    #     最新動画（new_video_list）: 登録日の降順
+    #     人気動画（popular_video_list）: コメント数の降順
     #     """
     #     channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-    #     video = channel.video_set.create(video_id=VIDEO_ID)
-    #     comment = Comment.objects.create(category='channel', foreign_id=CHANNEL_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
+    #     channel2 = Channel.objects.create(channel_id=f'{CHANNEL_ID}2', channel_nm=CHANNEL_NM)
+    #     video1 = channel.video_set.create(video_id=VIDEO_ID, video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
+    #     video2 = channel.video_set.create(video_id=f'{VIDEO_ID}2', video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
+    #     video3 = channel2.video_set.create(video_id=f'{VIDEO_ID}3', video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
+    #     comment = Comment.objects.create(category='video', foreign_id=VIDEO_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
     #     response = self.client.get(reverse('channel', args=[CHANNEL_ID]))
-    #     self.assertContains(response, COMMENT)
-
-    def test_add_channel_comment(self):
-        """
-        チャンネルにコメントを追加すると、テーブルにオブジェクトが作成される
-        """
-        channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        video = channel.video_set.create(video_id=VIDEO_ID)
-        response = self.client.post(reverse('channel', args=[CHANNEL_ID]), {
-            'comment': COMMENT,
-            'add_comment': ['']
-        })
-        self.assertQuerysetEqual(
-            Comment.objects.all(),
-            [f'<Comment: channel:{CHANNEL_ID}>']
-        )
+    #     self.assertQuerysetEqual(
+    #         response.context['new_video_list'], 
+    #         [f'<Video: {VIDEO_ID}2>', f'<Video: {VIDEO_ID}>']
+    #     )
+    #     self.assertQuerysetEqual(
+    #         response.context['popular_video_list'], 
+    #         [f'<Video: {VIDEO_ID}>', f'<Video: {VIDEO_ID}2>']
+    #     )
 
 
 class VideoViewTests(TestCase):
@@ -177,7 +142,11 @@ class VideoViewTests(TestCase):
         video = channel.video_set.create(video_id=VIDEO_ID)
         comment = Comment.objects.create(category='video', foreign_id=VIDEO_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
         response = self.client.get(reverse('video', args=[VIDEO_ID]))
-        self.assertContains(response, COMMENT)
+        content = json.loads(response.content)
+        self.assertIn(
+            COMMENT,
+            content["video_player_html"]
+        )
 
     def test_add_video_comment(self):
         """

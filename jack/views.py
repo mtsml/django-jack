@@ -66,62 +66,29 @@ def search(request):
                 search_result = search_youtube(query)
                 search_channel_list = search_result["channel_list"]
                 search_video_list = search_result["video_list"]
+                search_form = SearchForm()
 
-    channel_list = Channel.objects.all()
-    search_form = SearchForm()
+                context = {
+                    'search_channel_list': search_channel_list,
+                    'search_video_list': search_video_list
+                }
 
-    context = {
-        'channel_list': channel_list,
-        'search_channel_list': search_channel_list,
-        'search_form': search_form,
-        'search_video_list': search_video_list
-    }
-
-    return render(request, 'jack/search.html', context)
+                search_result_html = render_to_string('jack/search.html', context, request=request)
+                return JsonResponse({'search_result_html': search_result_html}) 
 
 
 def channel(request, channel_id):
     channel = get_object_or_404(Channel, channel_id=channel_id)
 
-    if request.method == 'POST':
-        if 'add_comment' in request.POST:
-            form = CommentForm(request.POST)
-            if form.is_valid():
-                comment_text = form.cleaned_data['comment']
-                comment = Comment.objects.create(
-                    category='channel', 
-                    foreign_id=channel_id,
-                    comment=comment_text,
-                    reg_datetime=datetime.datetime.now()
-                )
-                comment_form = CommentForm()
-                comment_list = channel.get_comment_list()
-                context = {
-                    'category': 'channel',
-                    'foreign_id': channel_id,
-                    'comment_form': comment_form,
-                    'comment_list': comment_list
-                }
-                if request.is_ajax():
-                    html = render_to_string('jack/component/comment.html', context, request=request)
-                    return JsonResponse({'form': html}) 
-
-    channel_list = Channel.objects.all()
-    comment_form = CommentForm()
     new_video_list = Video.get_new_video_list(5, channel_id)
     popular_video_list = Video.get_popular_video_list(5, channel_id)
-    search_form = SearchForm()
 
-    context = {
-        'channel': channel, 
-        'channel_list': channel_list,
-        'comment_form': comment_form,
-        'new_video_list': new_video_list,
-        'popular_video_list': popular_video_list,
-        'search_form': search_form,
-    }
+    new_video_html = render_to_string('jack/component/video.html', 
+        {'title': '最新の動画', 'video_list': new_video_list}, request=request)
+    popular_video_html = render_to_string('jack/component/video.html', 
+        {'title': '人気の動画' , 'video_list': popular_video_list}, request=request)
 
-    return render(request, 'jack/channel.html', context)
+    return JsonResponse({'new_video_html': new_video_html, 'popular_video_html': popular_video_html}) 
 
 
 def video(request, video_id):
@@ -150,15 +117,12 @@ def video(request, video_id):
                     html = render_to_string('jack/component/comment.html', context, request=request)
                     return JsonResponse({'form': html}) 
 
-    channel_list = Channel.objects.all()
     comment_form = CommentForm()
-    search_form = SearchForm()
 
     context = {
-        'channel_list': channel_list,
         'comment_form': comment_form,
-        'search_form': search_form,
         'video': video
     }
 
-    return render(request, 'jack/video.html', context)
+    html = render_to_string('jack/video.html', context, request=request)
+    return JsonResponse({'video_player_html': html}) 
