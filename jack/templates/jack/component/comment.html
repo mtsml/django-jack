@@ -1,0 +1,44 @@
+<div class="comment-list">
+    <form class="comment-form ui form" action="{% url category foreign_id %}" method="POST">
+        {% csrf_token %}
+        <div class="two fields">
+            <div class="field">
+                {{ comment_form.comment }}
+            </div>
+            <div class="field">
+                <button class="add-btn ui button" name="add_comment" type="submit">追加</button>
+            </div>
+        </div>
+    </form>
+    <div>
+        {% for comment in comment_list %}
+            <p>{{ comment.comment }}</p>
+        {% endfor %}
+        <script>
+            $(".comment-form").submit(function(event) {
+                event.preventDefault();
+                var form = $(this);
+                var data = form.serialize()
+                    + '&'
+                    + encodeURI(form.find('.add-btn').prop('name'))
+                    + '='
+                    + encodeURI(form.find('.add-btn').prop('value'))
+                console.log(data)
+                $.ajax({
+                    url: form.prop("action"),
+                    method: form.prop("method"),
+                    data: data,
+                    timeout: 10000,
+                    dataType: "text",
+                })
+                .done(function(data) {
+                    var res = JSON.parse(data)
+                    $('.comment-list').replaceWith(res['form']);
+                })
+                .fail(function(data) {
+                    alert("失敗しました");
+                })
+            });
+        </script>
+    </div>
+</div>

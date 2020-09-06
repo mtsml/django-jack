@@ -27,8 +27,8 @@ def index(request):
 
 
 def search(request):
-    channel_list = []
-    video_list = []
+    search_channel_list = []
+    search_video_list = []
 
     if request.method == 'POST':
         if 'add_channel' in request.POST:
@@ -64,15 +64,17 @@ def search(request):
             if form.is_valid():
                 query = form.cleaned_data['query']
                 search_result = search_youtube(query)
-                channel_list = search_result["channel_list"]
-                video_list = search_result["video_list"]
+                search_channel_list = search_result["channel_list"]
+                search_video_list = search_result["video_list"]
 
+    channel_list = Channel.objects.all()
     search_form = SearchForm()
 
     context = {
         'channel_list': channel_list,
+        'search_channel_list': search_channel_list,
         'search_form': search_form,
-        'video_list': video_list
+        'search_video_list': search_video_list
     }
 
     return render(request, 'jack/search.html', context)
@@ -93,13 +95,16 @@ def channel(request, channel_id):
                     reg_datetime=datetime.datetime.now()
                 )
                 comment_form = CommentForm()
+                comment_list = channel.get_comment_list()
                 context = {
                     'category': 'channel',
                     'foreign_id': channel_id,
-                    'comment_form': comment_form
+                    'comment_form': comment_form,
+                    'comment_list': comment_list
                 }
-                html = render_to_string('jack/comment.html', context, request=request)
-                return JsonResponse({'form': html, 'comment': comment_text}) 
+                if request.is_ajax():
+                    html = render_to_string('jack/component/comment.html', context, request=request)
+                    return JsonResponse({'form': html}) 
 
     channel_list = Channel.objects.all()
     comment_form = CommentForm()
@@ -120,16 +125,13 @@ def channel(request, channel_id):
 
 
 def video(request, video_id):
-    message=None
-    search_result=[]
-
     video = get_object_or_404(Video, video_id=video_id)
 
     if request.method == 'POST':
         if 'add_comment' in request.POST:
             form = CommentForm(request.POST)
             if form.is_valid():
-                comment_text = form.cleaned_data['comment']       
+                comment_text = form.cleaned_data['comment']
                 comment = Comment.objects.create(
                     category='video', 
                     foreign_id=video_id,
@@ -137,23 +139,26 @@ def video(request, video_id):
                     reg_datetime=datetime.datetime.now()
                 )
                 comment_form = CommentForm()
+                comment_list = video.get_comment_list()
                 context = {
                     'category': 'video',
                     'foreign_id': video_id,
-                    'comment_form': comment_form
+                    'comment_form': comment_form,
+                    'comment_list': comment_list
                 }
-                html = render_to_string('jack/comment.html', context, request=request)
-                return JsonResponse({'form': html, 'comment': comment_text}) 
+                if request.is_ajax():
+                    html = render_to_string('jack/component/comment.html', context, request=request)
+                    return JsonResponse({'form': html}) 
 
     channel_list = Channel.objects.all()
     comment_form = CommentForm()
     search_form = SearchForm()
 
     context = {
-        'video': video ,
         'channel_list': channel_list,
         'comment_form': comment_form,
-        'search_form': search_form
+        'search_form': search_form,
+        'video': video
     }
 
     return render(request, 'jack/video.html', context)
