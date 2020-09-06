@@ -5,14 +5,14 @@
             <div class="four wide column">
                 <h2>コメント</h2>
                 <div class='ui item'>
-                    <form class="ui form" action="{% url 'channel' channel.channel_id %}" method="POST">
+                    <form class="add-form ui form" action="{% url 'channel' channel.channel_id %}" method="POST">
                         {% csrf_token %}
                         <div class="two fields">
                             <div class="field">
                                 {{ comment_form.comment }}
                             </div>
                             <div class="field">
-                                <button class="ui button" name="add_comment" type="submit">追加</button>
+                                <button class="add-btn ui button" name="add_comment" type="submit">追加</button>
                             </div>
                         </div>
                     </form>

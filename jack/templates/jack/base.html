@@ -10,12 +10,43 @@
     <title>Django Jack</title>
 </head>
 <body>
-  <header>
-    {% include "jack/header.html" %}
-  </header>
-  <main>
-    {% block content %}
-    {% endblock %}
-  </main>
+    <header>
+        {% include "jack/header.html" %}
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    <script>
+        $(".add-form").submit(function(event) {
+            event.preventDefault();
+            var form = $(this);
+            var data = form.serialize()
+                + '&'
+                + encodeURI(form.find('.add-btn').prop('name'))
+                + '='
+                + encodeURI(form.find('.add-btn').prop('value'))
+            console.log(data)
+            $.ajax({
+                url: form.prop("action"),
+                method: form.prop("method"),
+                data: data,
+                timeout: 10000,
+                dataType: "text",
+            })
+            .done(function(data) {
+                var res = JSON.parse(data)
+                if (res.comment) {
+                    form.find('input').val("");
+                    form.after(`<p>${res.comment}</p>`);
+                } else {
+                    form.children('.add-btn').prop('disabled', true);                    
+                }
+            })
+            .fail(function(data) {
+                alert("失敗しました");
+            })
+        });
+    </script>
 </body>
 </html>

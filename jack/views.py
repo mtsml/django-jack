@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -33,14 +34,16 @@ def search(request):
             channel_nm = request.POST['channel_nm']
             if not Channel.is_channel_id_exists(channel_id):
                 channel = Channel.objects.create(channel_id=channel_id, channel_nm=channel_nm)
-            return JsonResponse({'data': 'OK'})
+            return JsonResponse({})
+
         elif 'add_video' in request.POST:
             video_id = request.POST['video_id']
             channel_id = request.POST['channel_id']
             channel = get_object_or_404(Channel, channel_id=channel_id)
             if not Video.is_video_id_exists(video_id):
                 channel.video_set.create(video_id=video_id)
-            return JsonResponse({'data': 'OK'})
+            return JsonResponse({})
+
         elif 'search' in request.POST:
             form = SearchForm(request.POST)
             if form.is_valid():
@@ -67,13 +70,15 @@ def channel(request, channel_id):
         if 'add_comment' in request.POST:
             form = CommentForm(request.POST)
             if form.is_valid():
+                comment_text = form.cleaned_data['comment']
                 comment = Comment.objects.create(
                     category='channel', 
                     foreign_id=channel_id,
-                    comment=form.cleaned_data['comment'],
+                    comment=comment_text,
                     reg_datetime=datetime.datetime.now()
                 )
-                return redirect('channel', channel_id=channel_id)
+                data = {'comment': comment_text}
+                return JsonResponse(data, safe=False)
 
     comment_form = CommentForm()
     search_form = SearchForm()

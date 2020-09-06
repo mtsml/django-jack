@@ -66,31 +66,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        $(".add-form").submit(function(event) {
-            event.preventDefault();
-            var form = $(this);
-            var data = form.serialize()
-                + '&'
-                + encodeURI(form.children('.add-btn').prop('name'))
-                + '='
-                + encodeURI(form.children('.add-btn').prop('value'))
-            console.log(data)
-            $.ajax({
-                url: form.prop("action"),
-                method: form.prop("method"),
-                data: data,
-                timeout: 10000,
-                dataType: "text",
-            })
-            .done(function(data) {
-                console.log(data)
-                form.children('.add-btn').prop('disabled', true);
-            })
-            .fail(function(data) {
-                alert("失敗しました");
-            })
-        });
-    </script>
 {% endblock %}
