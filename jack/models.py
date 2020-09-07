@@ -42,7 +42,7 @@ class Video(models.Model):
             channel = Channel.objects.get(channel_id=channel_id)
             return Video.objects.filter(channel_id=channel_id).order_by('-reg_datetime').all()[:cnt]
         else:
-            return Video.objects.order_by('-reg_datetime').all()[:cnt]
+            return Video.objects.order_by(models.F('reg_datetime').desc(nulls_last=True)).all()[:cnt]
 
     def get_popular_video_list(cnt, channel_id):
         # TODO: パフォーマンスのボトルネック

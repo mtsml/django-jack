@@ -32,21 +32,24 @@ class IndexViewTests(TestCase):
     def test_display_video(self):
         """
         テーブルに動画が存在する場合は、動画の一覧が表示される
-        最新動画（new_video_list）: 登録日の降順
+        最新動画（new_video_list）: 登録日の降順（NULLS LAST）
         人気動画（popular_video_list）: コメント数の降順
         """
         channel = Channel.objects.create(channel_id=CHANNEL_ID, channel_nm=CHANNEL_NM)
-        video1 = channel.video_set.create(video_id=VIDEO_ID, video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
-        video2 = channel.video_set.create(video_id=f'{VIDEO_ID}2', video_nm=VIDEO_NM, reg_datetime=datetime.datetime.now())
-        comment = Comment.objects.create(category='video', foreign_id=VIDEO_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
+        video1 = channel.video_set.create(video_id=f'{VIDEO_ID}1', video_nm=VIDEO_NM)
+        video2 = channel.video_set.create(video_id=f'{VIDEO_ID}2', video_nm=VIDEO_NM)
+        video2.reg_datetime = None
+        video2.save()
+        video3 = channel.video_set.create(video_id=f'{VIDEO_ID}3', video_nm=VIDEO_NM)
+        comment = Comment.objects.create(category='video', foreign_id=f'{VIDEO_ID}2', comment=COMMENT, reg_datetime=datetime.datetime.now())
         response = self.client.get(reverse('index'))
         self.assertQuerysetEqual(
             response.context['new_video_list'], 
-            [f'<Video: {VIDEO_ID}2>', f'<Video: {VIDEO_ID}>']
+            [f'<Video: {VIDEO_ID}3>', f'<Video: {VIDEO_ID}1>', f'<Video: {VIDEO_ID}2>']
         )
         self.assertQuerysetEqual(
             response.context['popular_video_list'], 
-            [f'<Video: {VIDEO_ID}>', f'<Video: {VIDEO_ID}2>']
+            [f'<Video: {VIDEO_ID}2>', f'<Video: {VIDEO_ID}1>', f'<Video: {VIDEO_ID}3>']
         )
 
 
