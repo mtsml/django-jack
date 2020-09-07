@@ -54,7 +54,7 @@ class Video(models.Model):
                 ,thumbnails_url
 	            ,(SELECT COUNT(*) FROM comment WHERE category = 'video' AND foreign_id = video_id) AS cnt
             FROM video
-            {f"WHERE channel_id = {channel_id}" if channel_id else ''}
+            {f"WHERE channel_id = '{channel_id}'" if channel_id else ''}
             ORDER BY cnt DESC
             LIMIT {cnt};"""
         video_list = Video.objects.raw(sql)

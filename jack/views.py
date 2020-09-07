@@ -1,5 +1,3 @@
-import datetime
-
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
@@ -39,8 +37,7 @@ def search(request):
                 channel = Channel.objects.create(
                     channel_id=channel_id, 
                     channel_nm=channel_nm,
-                    thumbnails_url=thumbnails_url,
-                    reg_datetime=datetime.datetime.now()
+                    thumbnails_url=thumbnails_url
                 )
             return JsonResponse({})
 
@@ -54,8 +51,7 @@ def search(request):
                 channel.video_set.create(
                     video_id=video_id,
                     video_nm=video_nm,
-                    thumbnails_url=thumbnails_url,
-                    reg_datetime=datetime.datetime.now()
+                    thumbnails_url=thumbnails_url
                 )
             return JsonResponse({})
 
@@ -102,8 +98,7 @@ def video(request, video_id):
                 comment = Comment.objects.create(
                     category='video', 
                     foreign_id=video_id,
-                    comment=comment_text,
-                    reg_datetime=datetime.datetime.now()
+                    comment=comment_text
                 )
                 comment_form = CommentForm()
                 comment_list = video.get_comment_list()

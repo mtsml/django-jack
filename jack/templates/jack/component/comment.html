@@ -15,7 +15,7 @@
             <p>{{ comment.comment }}</p>
         {% endfor %}
         <script>
-            $(document).on("submit", ".comment-form", function(event) {
+            $(".comment-form").submit(function(event) {
                 event.preventDefault();
                 var form = $(this);
                 var data = form.serialize()
