@@ -1,5 +1,3 @@
-import datetime
-
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
@@ -39,23 +37,28 @@ def search(request):
                 channel = Channel.objects.create(
                     channel_id=channel_id, 
                     channel_nm=channel_nm,
-                    thumbnails_url=thumbnails_url,
-                    reg_datetime=datetime.datetime.now()
+                    thumbnails_url=thumbnails_url
                 )
             return JsonResponse({})
 
         elif 'add_video' in request.POST:
             video_id = request.POST['video_id']
             channel_id = request.POST['channel_id']
+            channel_nm = request.POST['channel_nm']
             video_nm = request.POST['video_nm']
             thumbnails_url = request.POST['thumbnails_url']
+            if not Channel.is_channel_id_exists(channel_id):
+                # APIのリクエストを減らすためにサムネイルを別途取得する処理は行わない
+                channel = Channel.objects.create(
+                    channel_id=channel_id, 
+                    channel_nm=channel_nm
+                )
             channel = get_object_or_404(Channel, channel_id=channel_id)
             if not Video.is_video_id_exists(video_id):
                 channel.video_set.create(
                     video_id=video_id,
                     video_nm=video_nm,
-                    thumbnails_url=thumbnails_url,
-                    reg_datetime=datetime.datetime.now()
+                    thumbnails_url=thumbnails_url
                 )
             return JsonResponse({})
 
@@ -87,8 +90,9 @@ def channel(request, channel_id):
         {'title': '最新の動画', 'video_list': new_video_list}, request=request)
     popular_video_html = render_to_string('jack/component/video.html', 
         {'title': '人気の動画' , 'video_list': popular_video_list}, request=request)
+    header_html = f'<a class="header-title" href="https://youtube.com/channel/{channel_id}/" target="_blank">{channel.channel_nm}</a>'
 
-    return JsonResponse({'new_video_html': new_video_html, 'popular_video_html': popular_video_html}) 
+    return JsonResponse({'new_video_html': new_video_html, 'popular_video_html': popular_video_html, 'header_html': header_html }) 
 
 
 def video(request, video_id):
@@ -102,8 +106,7 @@ def video(request, video_id):
                 comment = Comment.objects.create(
                     category='video', 
                     foreign_id=video_id,
-                    comment=comment_text,
-                    reg_datetime=datetime.datetime.now()
+                    comment=comment_text
                 )
                 comment_form = CommentForm()
                 comment_list = video.get_comment_list()
@@ -123,6 +126,8 @@ def video(request, video_id):
         'comment_form': comment_form,
         'video': video
     }
+    
+    video_player_html = render_to_string('jack/video.html', context, request=request)
+    header_html = f'<a href="https://youtube.com/video/{video.video_id}/" target="_blank">{video.video_nm}</a>'
 
-    html = render_to_string('jack/video.html', context, request=request)
-    return JsonResponse({'video_player_html': html}) 
+    return JsonResponse({'video_player_html': video_player_html, 'header_html': header_html}) 

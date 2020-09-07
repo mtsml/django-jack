@@ -5,19 +5,10 @@
     </div>
     <div class="ui centered item">
         <h1>
-            <a class="header-title" href="https://youtube.com/channel/{{ channel.channel_id }}/" target="_blank">
+            <a class="header-title" href="" target="_blank">
             </a>
         </h1>
     </div>
-    {% if video %}
-        <div class="center item">
-            <h1>
-                <a href="https://youtube.com/video/{{ video.video_id }}/" target="_blank">
-                    {{ video.video_nm }}
-                </a>
-            </h1>
-        </div>
-    {% endif %}
     <div class="right menu">
         <div class="item">
             <form class="search-form ui form" action="{% url 'search' %}" method="POST">

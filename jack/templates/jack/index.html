@@ -34,7 +34,7 @@
                 $('.search-channel-list').remove();
                 $('.search-video-list').remove();
                 
-                $('.header-title').text(a.text());
+                $('.header-title').replaceWith(res['header_html']);
                 $('.new-video-list').html(res['new_video_html']);
                 $('.popular-video-list').html(res['popular_video_html']);
             })
@@ -54,7 +54,7 @@
                 var res = JSON.parse(data);
                 $('.new-video-list').empty().hide();
                 $('.popular-video-list').empty().hide();
-                $('.header-title').text(a.text());
+                $('.header-title').replaceWith(res['header_html']);
                 $('.side-channel-list').after(res['video_player_html']);
             })
             .fail(function(data) {
