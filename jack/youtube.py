@@ -46,6 +46,7 @@ def search_youtube(query):
                 'thumbnails_url': item["snippet"]["thumbnails"]["default"]["url"],
                 'video_nm': item["snippet"]["title"],
                 'channel_id': item["snippet"]["channelId"],
+                'channel_nm': item["snippet"]["channelTitle"],
                 'registered': registered
             })
 

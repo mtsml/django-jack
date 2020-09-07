@@ -44,8 +44,15 @@ def search(request):
         elif 'add_video' in request.POST:
             video_id = request.POST['video_id']
             channel_id = request.POST['channel_id']
+            channel_nm = request.POST['channel_nm']
             video_nm = request.POST['video_nm']
             thumbnails_url = request.POST['thumbnails_url']
+            if not Channel.is_channel_id_exists(channel_id):
+                # APIのリクエストを減らすためにサムネイルを別途取得する処理は行わない
+                channel = Channel.objects.create(
+                    channel_id=channel_id, 
+                    channel_nm=channel_nm
+                )
             channel = get_object_or_404(Channel, channel_id=channel_id)
             if not Video.is_video_id_exists(video_id):
                 channel.video_set.create(

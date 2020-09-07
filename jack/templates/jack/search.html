@@ -49,6 +49,7 @@
                         <form action="{% url 'search' %}" class="add-form ui form" method="POST">
                             {% csrf_token %}
                             <input name="channel_id" type="hidden" value="{{ video.channel_id }}">
+                            <input name="channel_nm" type="hidden" value="{{ video.channel_nm }}">
                             <input name="video_id" type="hidden" value="{{ video.video_id }}">
                             <input name="video_nm" type="hidden" value="{{ video.video_nm }}">
                             <input name="thumbnails_url" type="hidden" value="{{ video.thumbnails_url }}">
