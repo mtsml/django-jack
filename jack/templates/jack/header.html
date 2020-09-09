@@ -1,13 +1,13 @@
+<div class="ui inverted vertical menu sidebar">
+    {% include "jack/component/channel.html" with channel_list=channel_list %}
+</div>
 <div class="ui secondary stackable menu">
-    <div class="ui header item">
-        <i class="red youtube icon"></i>
-        <a href="{% url 'index' %}">Django Jack</a>
-    </div>
-    <div class="ui centered item">
-        <h1>
-            <a class="header-title" href="" target="_blank">
-            </a>
-        </h1>
+    <div class="menu">
+        <div id="js-sidebar" class="item"><i class="icon large grey content"></i></div>
+        <div class="ui header item">
+            <i class="red youtube icon"></i>
+            <a href="{% url 'index' %}">Django Jack</a>
+        </div>
     </div>
     <div class="right menu">
         <div class="item">
@@ -25,3 +25,8 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).on('click', '#js-sidebar', function() {
+        $('.ui.sidebar').sidebar('toggle');
+    });
+</script>
