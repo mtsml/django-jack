@@ -1,17 +1,16 @@
 {% extends 'jack/base.html' %}
 {% block content %}
+<div class="pusher">
     <div class="ui container">
-        <div class="ui three column stackable grid">
-            <div class="side-channel-list four wide column">
-                {% include "jack/component/channel.html" with channel_list=channel_list %}
-            </div>
-
-            <div class="new-video-list six wide column">
-                {% include "jack/component/video.html" with title="最新の動画" video_list=new_video_list %}
-            </div>
-
-            <div class="popular-video-list six wide column">
-                {% include "jack/component/video.html" with title="人気の動画" video_list=popular_video_list %}
+        <div class="header-title">
+        </div>
+            <div class="ui two column stackable grid">
+                <div class="new-video-list eight wide column">
+                    {% include "jack/component/video.html" with title="最新の動画" video_list=new_video_list %}
+                </div>
+                <div class="popular-video-list eight wide column">
+                    {% include "jack/component/video.html" with title="人気の動画" video_list=popular_video_list %}
+                </div>
             </div>
         </div>
     </div>
@@ -29,6 +28,7 @@
                 
                 // 動画画面から遷移時のための初期化処理
                 $('.video-player').remove();
+                $('.video-comment').remove();
                 $('.new-video-list').show();
                 $('.popular-video-list').show();
                 $('.search-channel-list').remove();
@@ -55,7 +55,7 @@
                 $('.new-video-list').empty().hide();
                 $('.popular-video-list').empty().hide();
                 $('.header-title').replaceWith(res['header_html']);
-                $('.side-channel-list').after(res['video_player_html']);
+                $('.popular-video-list').after(res['video_player_html']);
             })
             .fail(function(data) {
                 alert("深刻なエラーが発生しました。。。");
@@ -82,12 +82,13 @@
                 // 画面遷移時の初期処理
                 $('.header-title').empty();
                 $('.video-player').remove();
+                $('.video-comment').remove();
                 $('.new-video-list').empty().hide();
                 $('.popular-video-list').empty().hide();
                 $('.search-channel-list').remove();
                 $('.search-video-list').remove();
 
-                $('.side-channel-list').after(res['search_result_html']);
+                $('.popular-video-list').after(res['search_result_html']);
             })
             .fail(function(data) {
                 alert("深刻なエラーが発生しました。。。");

@@ -1,11 +1,7 @@
-<div class='channel-list'>
-    <h2>チャンネル一覧</h2>
-    {% for channel in channel_list %}
-    <h3>
-        <a class='channel-link' href="{% url 'channel' channel.channel_id %}">
-            {{ channel.channel_nm }}
-        </a>
-    </h3>
-    <div class="ui divider"></div>
-    {% endfor %}
+{% for channel in channel_list %}
+<div class="ui item">
+    <a class='channel-link' href="{% url 'channel' channel.channel_id %}">
+        {{ channel.channel_nm }}
+    </a>
 </div>
+{% endfor %}
