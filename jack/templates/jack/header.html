@@ -1,11 +1,11 @@
-<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+<nav class="navbar navbar-dark sticky-top bg-dark p-0 shadow">
     <div class="text-nowrap">
         <button 
-            class="navbar-toggler d-md-none collapsed"
+            class="navbar-toggler"
             data-toggle="collapse"
             data-target="#sidebarMenu"
         >
-            <span class="navbar-toggler-icon"></span>
+            <i class="fas fa-bars fa-1x"></i>
         </button>
         <a class="navbar-brand col-md-3 col-lg-2" href="{% url 'index' %}">Django Jack</a>
     </div>
@@ -16,4 +16,7 @@
             <i class="fas fa-search"></i>
         </button>
     </form>
+    <div id="sidebarMenu" class="collapse navbar-collapse">
+        {% include "jack/component/channel.html" with channel_list=channel_list %}
+    </div>
 </nav>
