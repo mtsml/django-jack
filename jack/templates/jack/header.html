@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark sticky-top bg-dark p-0 shadow">
+<nav class="navbar navbar-dark sticky-top bg-dark px-0 py-1 shadow">
     <div class="text-nowrap">
         <button 
             class="navbar-toggler"
@@ -9,10 +9,10 @@
         </button>
         <a class="navbar-brand col-md-3 col-lg-2" href="{% url 'index' %}">Django Jack</a>
     </div>
-    <form class="search-form form-controle m-2" action="{% url 'search' %}" method="POST">
+    <form class="search-form d-flex" action="{% url 'search' %}" method="POST">
         {% csrf_token %}
         {{ search_form.query }}
-        <button class="search-btn btn btn-light p-2" name='search' type="submit">
+        <button class="search-btn btn btn-sm my-0 btn-light z-depth-0" name='search' type="submit">
             <i class="fas fa-search"></i>
         </button>
     </form>
