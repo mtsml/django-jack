@@ -1,18 +1,17 @@
-<div class="video-player ui twelve wide column">
-    <div class="ui segment">
-        <div class="ui embed">
-            <iframe width="560" height="315" 
-                src="https://www.youtube.com/embed/{{ video.video_id }}" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
+<div class="video-player contianer">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" 
+                    src="https://www.youtube.com/embed/{{ video.video_id }}" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+        <div class="col-md-4">
+            {% include "jack/component/comment.html" with category="video" foreign_id=video.video_id comment_form=comment_form comment_list=video.get_comment_list %}
         </div>
     </div>
-</div>
-<div class="video-comment ui four wide column">
-    <h3>
-        動画へのコメント
-    </h3>
-    {% include "jack/component/comment.html" with category="video" foreign_id=video.video_id comment_form=comment_form comment_list=video.get_comment_list %}
 </div>

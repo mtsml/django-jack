@@ -1,18 +1,14 @@
 <div class='video-list'>
-    <h2>{{ title }}</h2>
-    <div class="ui divided items">
+    <h3>{{ title }}</h3>
+    <div class="row">
         {% for video in video_list %}
-            <div class="item">
-                <div class="ui image">
-                    <img src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}" >
-                </div>
-                <div class="top aligned content">
-                    <h3 class="ui header">
-                        <a class="video-link" href="{% url 'video' video.video_id %}">
-                            {{ video.video_nm }}
-                        </a>
-                    </h3>
-                </div>
+            <div class="col-lg-3 mb-3">
+                <a class="video-link" href="{% url 'video' video.video_id %}">
+                <img class="img-thumbnail mb-3" src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}" >
+                    <h6>
+                        {{ video.video_nm }}
+                    </h6>
+                </a>
             </div>
         {% endfor %}
     </div>

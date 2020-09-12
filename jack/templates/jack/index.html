@@ -1,16 +1,18 @@
 {% extends 'jack/base.html' %}
 {% block content %}
-<div class="pusher">
-    <div class="ui container">
-        <div class="header-title">
-        </div>
-            <div class="ui two column stackable grid">
-                <div class="new-video-list eight wide column">
-                    {% include "jack/component/video.html" with title="最新の動画" video_list=new_video_list %}
-                </div>
-                <div class="popular-video-list eight wide column">
-                    {% include "jack/component/video.html" with title="人気の動画" video_list=popular_video_list %}
-                </div>
+    <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+            <div class="sidebar-sticky">
+                {% include "jack/component/channel.html" with channel_list=channel_list %}
+            </div>
+        </nav>
+        <div class="col-md-9 ml-sm-auto col-lg-10 px-md-4 mt-2">
+            <div class="header-title"></div>
+            <div class="new-video-list container">
+                {% include "jack/component/video.html" with title="最新の動画" video_list=new_video_list %}
+            </div>
+            <div class="popular-video-list container">
+                {% include "jack/component/video.html" with title="人気の動画" video_list=popular_video_list %}
             </div>
         </div>
     </div>
