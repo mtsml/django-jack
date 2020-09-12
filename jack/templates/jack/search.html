@@ -1,66 +1,56 @@
-<div class="search-channel-list eight wide column">
-    <h2>チャンネルの検索結果</h2>
-    <div class="ui divided items">
+<div class="search-channel-list">
+    <h3>チャンネルの検索結果</h3>
+    <div class="row">
         {% for channel in search_channel_list %}
-            <div class='ui item'>
-                <div class="ui circular image">
+            <div class='col-lg-3 mb-3'>
+                <img class="rounded-circle mx-auto d-block" src="{{ channel.thumbnails_url }}" alt="{{ channel.channel_nm }}">
+                <form action="{% url 'search' %}" class="add-form float-right" method="POST">
+                    {% csrf_token %}
+                    <input name="channel_id" type="hidden" value="{{ channel.channel_id }}">
+                    <input name="channel_nm" type="hidden" value="{{ channel.channel_nm }}">
+                    <input name="thumbnails_url" type="hidden" value="{{ channel.thumbnails_url }}">
+                    <button class="add-btn btn btn-light p-2" name='add_channel' type="submit"
+                        {% if channel.registered %}disabled{% endif %}
+                    >
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </form>
+                <h6>
                     <a href="https://youtube.com/channel/{{ channel.channel_id }}" target="_blank">
-                        <img src="{{ channel.thumbnails_url }}" alt="{{ channel.channel_nm }}">
+                        {{ channel.channel_nm }} 
+                        <i class="fas fa-external-link-alt fa-xs"></i>
                     </a>
-                </div>
-                <div class="top aligned content">
-                    <div class="ui header">
-                        {{ channel.channel_nm }}
-                    </div>
-                    <div class="extra">
-                        <form action="{% url 'search' %}" class="add-form ui form" method="POST">
-                            {% csrf_token %}
-                            <input name="channel_id" type="hidden" value="{{ channel.channel_id }}">
-                            <input name="channel_nm" type="hidden" value="{{ channel.channel_nm }}">
-                            <input name="thumbnails_url" type="hidden" value="{{ channel.thumbnails_url }}">
-                            <button class="add-btn ui right floated button" name='add_channel' type="submit"
-                                {% if channel.registered %}disabled{% endif %}
-                            >
-                                追加
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                </h6>
             </div>
         {% endfor %}
     </div>
 </div>
 
-<div class="search-video-list eight wide column">
-    <h2>動画の検索結果</h2>
-    <div class="ui divided items">
+<div class="search-video-list">
+    <h3>動画の検索結果</h3>
+    <div class="row">
         {% for video in search_video_list %}
-            <div class='ui item'>
-                <div class="ui image">
+            <div class='col-lg-3 mb-3'>
+                <img class="rounded mx-auto d-block" src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}">
+                <form action="{% url 'search' %}" class="add-form float-right" method="POST">
+                    {% csrf_token %}
+                    <input name="channel_id" type="hidden" value="{{ video.channel_id }}">
+                    <input name="channel_nm" type="hidden" value="{{ video.channel_nm }}">
+                    <input name="video_id" type="hidden" value="{{ video.video_id }}">
+                    <input name="video_nm" type="hidden" value="{{ video.video_nm }}">
+                    <input name="thumbnails_url" type="hidden" value="{{ video.thumbnails_url }}">
+                    <button class="add-btn btn btn-light p-2" name='add_video' type="submit"
+                        {% if video.registered %}disabled{% endif %}
+                    >
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </form>
+                <h6>
                     <a href="https://youtube.com/video/{{ video.video_id }}" target="_blank">
-                        <img src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}">
+                        {{ video.video_nm }} 
+                        <i class="fas fa-external-link-alt fa-xs"></i>
                     </a>
-                </div>
-                <div class="top aligned content">
-                    <div class="ui header">
-                        {{ video.video_nm }}
-                    </div>
-                    <div class="extra">
-                        <form action="{% url 'search' %}" class="add-form ui form" method="POST">
-                            {% csrf_token %}
-                            <input name="channel_id" type="hidden" value="{{ video.channel_id }}">
-                            <input name="channel_nm" type="hidden" value="{{ video.channel_nm }}">
-                            <input name="video_id" type="hidden" value="{{ video.video_id }}">
-                            <input name="video_nm" type="hidden" value="{{ video.video_nm }}">
-                            <input name="thumbnails_url" type="hidden" value="{{ video.thumbnails_url }}">
-                            <button class="add-btn ui right floated button" name='add_video' type="submit"
-                                {% if video.registered %}disabled{% endif %}
-                            >
-                                追加
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                </h6>
             </div>
         {% endfor %}
     </div>

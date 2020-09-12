@@ -3,12 +3,12 @@
     <div class="row">
         {% for video in video_list %}
             <div class="col-lg-3 mb-3">
-                <a class="video-link" href="{% url 'video' video.video_id %}">
-                <img class="img-thumbnail mb-3" src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}" >
-                    <h6>
+                <img class="rounded mx-auto d-block" src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}" >
+                <h6>
+                    <a class="video-link text-primary" href="{% url 'video' video.video_id %}">
                         {{ video.video_nm }}
-                    </h6>
-                </a>
+                    </a>
+                </h6>
             </div>
         {% endfor %}
     </div>
