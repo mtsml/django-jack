@@ -9,9 +9,11 @@
         </button>
         <a class="navbar-brand col-md-3 col-lg-2" href="{% url 'index' %}">Django Jack</a>
     </div>
-    <form class="search-form form-inline m-2" action="{% url 'search' %}" method="POST">
+    <form class="search-form form-controle m-2" action="{% url 'search' %}" method="POST">
         {% csrf_token %}
         {{ search_form.query }}
-        <button class="search-btn btn-primary" name='search' type="submit">検索</button>
+        <button class="search-btn btn btn-light p-2" name='search' type="submit">
+            <i class="fas fa-search"></i>
+        </button>
     </form>
 </nav>

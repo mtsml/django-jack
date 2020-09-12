@@ -2,7 +2,9 @@
     <form class="comment-form form-inline" action="{% url category foreign_id %}" method="POST">
         {% csrf_token %}
         {{ comment_form.comment }}
-        <button class="add-btn btn-primary" name="add_comment" type="submit">追加</button>
+        <button class="add-btn btn btn-light p-2" name="add_comment" type="submit">
+            <i class="fas fa-plus"></i>
+        </button>
     </form>
     <div>
         {% for comment in comment_list %}
