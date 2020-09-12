@@ -1,17 +1,12 @@
 {% extends 'jack/base.html' %}
 {% block content %}
-<div class="pusher">
-    <div class="ui container">
-        <div class="header-title">
+    <div class="mt-2">
+        <div class="header-title"></div>
+        <div class="new-video-list container">
+            {% include "jack/component/video.html" with title="最新の動画" video_list=new_video_list %}
         </div>
-            <div class="ui two column stackable grid">
-                <div class="new-video-list eight wide column">
-                    {% include "jack/component/video.html" with title="最新の動画" video_list=new_video_list %}
-                </div>
-                <div class="popular-video-list eight wide column">
-                    {% include "jack/component/video.html" with title="人気の動画" video_list=popular_video_list %}
-                </div>
-            </div>
+        <div class="popular-video-list container">
+            {% include "jack/component/video.html" with title="人気の動画" video_list=popular_video_list %}
         </div>
     </div>
     <script>

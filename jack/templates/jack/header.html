@@ -1,32 +1,22 @@
-<div class="ui inverted vertical menu sidebar">
-    {% include "jack/component/channel.html" with channel_list=channel_list %}
-</div>
-<div class="ui secondary stackable menu">
-    <div class="menu">
-        <div id="js-sidebar" class="item"><i class="icon large grey content"></i></div>
-        <div class="ui header item">
-            <i class="red youtube icon"></i>
-            <a href="{% url 'index' %}">Django Jack</a>
-        </div>
+<nav class="navbar navbar-dark sticky-top bg-dark p-0 shadow">
+    <div class="text-nowrap">
+        <button 
+            class="navbar-toggler"
+            data-toggle="collapse"
+            data-target="#sidebarMenu"
+        >
+            <i class="fas fa-bars fa-1x"></i>
+        </button>
+        <a class="navbar-brand col-md-3 col-lg-2" href="{% url 'index' %}">Django Jack</a>
     </div>
-    <div class="right menu">
-        <div class="item">
-            <form class="search-form ui form" action="{% url 'search' %}" method="POST">
-                {% csrf_token %}
-                <div class="two fields">
-                    <div class="field">
-                        {{ search_form.query }}
-                    </div>
-                    <div class="field">
-                        <button class="search-btn ui button" name='search' type="submit">検索</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+    <form class="search-form form-controle m-2" action="{% url 'search' %}" method="POST">
+        {% csrf_token %}
+        {{ search_form.query }}
+        <button class="search-btn btn btn-light p-2" name='search' type="submit">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+    <div id="sidebarMenu" class="collapse navbar-collapse">
+        {% include "jack/component/channel.html" with channel_list=channel_list %}
     </div>
-</div>
-<script>
-    $(document).on('click', '#js-sidebar', function() {
-        $('.ui.sidebar').sidebar('toggle');
-    });
-</script>
+</nav>

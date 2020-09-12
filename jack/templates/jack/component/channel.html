@@ -1,7 +1,9 @@
-{% for channel in channel_list %}
-<div class="ui item">
-    <a class='channel-link' href="{% url 'channel' channel.channel_id %}">
-        {{ channel.channel_nm }}
-    </a>
-</div>
-{% endfor %}
+<ul class="navbar-nav ml-3 mr-auto">
+    {% for channel in channel_list %}
+    <li class="nav-item">
+        <a class='channel-link nav-link' href="{% url 'channel' channel.channel_id %}">
+            {{ channel.channel_nm }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>

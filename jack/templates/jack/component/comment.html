@@ -1,14 +1,10 @@
 <div class="comment-list">
-    <form class="comment-form ui form" action="{% url category foreign_id %}" method="POST">
+    <form class="comment-form form-inline" action="{% url category foreign_id %}" method="POST">
         {% csrf_token %}
-        <div class="two fields">
-            <div class="field">
-                {{ comment_form.comment }}
-            </div>
-            <div class="field">
-                <button class="add-btn ui button" name="add_comment" type="submit">追加</button>
-            </div>
-        </div>
+        {{ comment_form.comment }}
+        <button class="add-btn btn btn-light p-2" name="add_comment" type="submit">
+            <i class="fas fa-plus"></i>
+        </button>
     </form>
     <div>
         {% for comment in comment_list %}
