@@ -1,57 +1,88 @@
-<div class="search-channel-list">
-    <h3>チャンネルの検索結果</h3>
-    <div class="row">
-        {% for channel in search_channel_list %}
-            <div class='col-lg-3 mb-3'>
-                <img class="rounded-circle mx-auto d-block" src="{{ channel.thumbnails_url }}" alt="{{ channel.channel_nm }}">
-                <form action="{% url 'search' %}" class="add-form float-right" method="POST">
-                    {% csrf_token %}
-                    <input name="channel_id" type="hidden" value="{{ channel.channel_id }}">
-                    <input name="channel_nm" type="hidden" value="{{ channel.channel_nm }}">
-                    <input name="thumbnails_url" type="hidden" value="{{ channel.thumbnails_url }}">
-                    <button class="add-btn btn btn-sm my-0 btn-light z-depth-0" name='add_channel' type="submit"
-                        {% if channel.registered %}disabled{% endif %}
-                    >
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </form>
-                <h6>
-                    <a href="https://youtube.com/channel/{{ channel.channel_id }}" target="_blank">
-                        {{ channel.channel_nm }} 
-                        <i class="fas fa-external-link-alt fa-xs"></i>
-                    </a>
-                </h6>
+{% extends 'jack/base.html' %}
+{% block content %}
+    <div class="mt-2">
+        <div class="search-channel-list mt-4">
+            <h3>チャンネルの検索結果</h3>
+            <div class="row">
+                {% for channel in search_channel_list %}
+                    <div class='col-lg-3 mb-3'>
+                        <img class="rounded-circle mx-auto d-block" src="{{ channel.thumbnails_url }}" alt="{{ channel.channel_nm }}">
+                        <form action="{% url 'search' %}" class="add-form float-right" method="POST">
+                            {% csrf_token %}
+                            <input name="channel_id" type="hidden" value="{{ channel.channel_id }}">
+                            <input name="channel_nm" type="hidden" value="{{ channel.channel_nm }}">
+                            <input name="thumbnails_url" type="hidden" value="{{ channel.thumbnails_url }}">
+                            <button class="add-btn btn btn-sm my-0 btn-light z-depth-0" name='add_channel' type="submit"
+                                {% if channel.registered %}disabled{% endif %}
+                            >
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </form>
+                        <h6>
+                            <a class="text-reset" href="https://youtube.com/channel/{{ channel.channel_id }}" target="_blank">
+                                {{ channel.channel_nm }} 
+                                <i class="fas fa-external-link-alt fa-xs"></i>
+                            </a>
+                        </h6>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
-</div>
+        </div>
 
-<div class="search-video-list">
-    <h3>動画の検索結果</h3>
-    <div class="row">
-        {% for video in search_video_list %}
-            <div class='col-lg-3 mb-3'>
-                <img class="rounded mx-auto d-block" src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}">
-                <form action="{% url 'search' %}" class="add-form float-right" method="POST">
-                    {% csrf_token %}
-                    <input name="channel_id" type="hidden" value="{{ video.channel_id }}">
-                    <input name="channel_nm" type="hidden" value="{{ video.channel_nm }}">
-                    <input name="video_id" type="hidden" value="{{ video.video_id }}">
-                    <input name="video_nm" type="hidden" value="{{ video.video_nm }}">
-                    <input name="thumbnails_url" type="hidden" value="{{ video.thumbnails_url }}">
-                    <button class="add-btn btn btn-sm my-0 btn-light z-depth-0" name='add_video' type="submit"
-                        {% if video.registered %}disabled{% endif %}
-                    >
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </form>
-                <h6>
-                    <a href="https://youtube.com/video/{{ video.video_id }}" target="_blank">
-                        {{ video.video_nm }} 
-                        <i class="fas fa-external-link-alt fa-xs"></i>
-                    </a>
-                </h6>
+        <div class="search-video-list mt-4">
+            <h3>動画の検索結果</h3>
+            <div class="row">
+                {% for video in search_video_list %}
+                    <div class='col-lg-3 mb-3'>
+                        <img class="rounded mx-auto d-block" src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}">
+                        <form action="{% url 'search' %}" class="add-form float-right" method="POST">
+                            {% csrf_token %}
+                            <input name="channel_id" type="hidden" value="{{ video.channel_id }}">
+                            <input name="channel_nm" type="hidden" value="{{ video.channel_nm }}">
+                            <input name="video_id" type="hidden" value="{{ video.video_id }}">
+                            <input name="video_nm" type="hidden" value="{{ video.video_nm }}">
+                            <input name="thumbnails_url" type="hidden" value="{{ video.thumbnails_url }}">
+                            <button class="add-btn btn btn-sm my-0 btn-light z-depth-0" name='add_video' type="submit"
+                                {% if video.registered %}disabled{% endif %}
+                            >
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </form>
+                        <h6>
+                            <a class="text-reset" href="https://youtube.com/video/{{ video.video_id }}" target="_blank">
+                                {{ video.video_nm }} 
+                                <i class="fas fa-external-link-alt fa-xs"></i>
+                            </a>
+                        </h6>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
     </div>
-</div>
+
+    <script>
+        $(document).on("submit", ".add-form", function(event) {
+            event.preventDefault();
+            var form = $(this);
+            var data = form.serialize()
+                + '&'
+                + encodeURI(form.find('.add-btn').prop('name'))
+                + '='
+                + encodeURI(form.find('.add-btn').prop('value'))
+            $.ajax({
+                url: form.prop("action"),
+                method: form.prop("method"),
+                data: data,
+                timeout: 10000,
+                dataType: "text",
+            })
+            .done(function(data) {
+                var res = JSON.parse(data)
+                form.children('.add-btn').prop('disabled', true);                    
+            })
+            .fail(function(data) {
+                alert("深刻なエラーが発生しました。。。");
+            })
+        });
+    </script>
+{% endblock %}

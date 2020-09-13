@@ -1,5 +1,5 @@
-<nav class="navbar navbar-dark fixed-top bg-dark px-0 py-1 shadow">
-    <div class="text-nowrap">
+<nav class="navbar navbar-dark bg-dark fixed-top px-0 py-1 z-depth-0">
+    <div class="text-nowrap ml-1">
         <button 
             class="navbar-toggler"
             data-toggle="collapse"
@@ -7,12 +7,16 @@
         >
             <i class="fas fa-bars fa-1x"></i>
         </button>
-        <a class="navbar-brand col-md-3 col-lg-2" href="{% url 'index' %}">Django Jack</a>
+        <a class="navbar-brand" href="{% url 'index' %}">
+            <strong>
+                Django Jack
+            </strong>
+        </a>
     </div>
-    <form class="search-form form-inline d-none d-md-flex ml-3" action="{% url 'search' %}" method="POST">
+    <form class="search-form md-form d-none d-md-flex ml-3 my-2" action="{% url 'search' %}" method="POST">
         {% csrf_token %}
         {{ search_form.query }}
-        <button class="search-btn btn btn-sm my-0 btn-light z-depth-0" name='search' type="submit">
+        <button class="search-btn btn btn-sm px-3 my-0 btn-light z-depth-0" name='search' type="submit">
             <i class="fas fa-search"></i>
         </button>
     </form>    

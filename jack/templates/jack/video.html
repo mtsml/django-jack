@@ -1,17 +1,28 @@
-<div class="video-player contianer">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" 
-                    src="https://www.youtube.com/embed/{{ video.video_id }}" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
+{% extends 'jack/base.html' %}
+{% block content %}
+    <div class="mt-2">
+        <h2 class="mt-4 mb-3">
+            <a class="text-reset" href="https://youtube.com/video/{video.video_id}/" target="_blank">
+                {{ video.video_nm }} 
+                <i class="fas fa-external-link-alt fa-xs"></i>
+            </a>
+        </h2>
+        <div class="video-player contianer">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" 
+                            src="https://www.youtube.com/embed/{{ video.video_id }}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    {% include "jack/component/comment.html" with category="video" foreign_id=video.video_id comment_form=comment_form comment_list=video.get_comment_list %}
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            {% include "jack/component/comment.html" with category="video" foreign_id=video.video_id comment_form=comment_form comment_list=video.get_comment_list %}
-        </div>
     </div>
-</div>
+{% endblock %}

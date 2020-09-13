@@ -145,10 +145,9 @@ class VideoViewTests(TestCase):
         video = channel.video_set.create(video_id=VIDEO_ID)
         comment = Comment.objects.create(category='video', foreign_id=VIDEO_ID, comment=COMMENT, reg_datetime=datetime.datetime.now())
         response = self.client.get(reverse('video', args=[VIDEO_ID]))
-        content = json.loads(response.content)
-        self.assertIn(
-            COMMENT,
-            content["video_player_html"]
+        self.assertContains(
+            response,
+            COMMENT
         )
 
     def test_add_video_comment(self):

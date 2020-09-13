@@ -10,8 +10,8 @@ from .youtube import search_youtube
 
 def index(request):
     channel_list = Channel.objects.all()
-    new_video_list = Video.get_new_video_list(4, None)
-    popular_video_list = Video.get_popular_video_list(4, None)
+    new_video_list = Video.get_new_video_list(5, None)
+    popular_video_list = Video.get_popular_video_list(5, None)
     search_form = SearchForm()
 
     context = {
@@ -24,6 +24,7 @@ def index(request):
     return render(request, 'jack/index.html', context)
 
 
+# POST用のURLと検索結果のURLは分けるべき
 def search(request):
     search_channel_list = []
     search_video_list = []
@@ -71,28 +72,35 @@ def search(request):
                 search_video_list = search_result["video_list"]
                 search_form = SearchForm()
 
+                channel_list = Channel.objects.all()
+
                 context = {
+                    'channel_list': channel_list,
                     'search_channel_list': search_channel_list,
+                    'search_form': search_form,
                     'search_video_list': search_video_list
                 }
 
-                search_result_html = render_to_string('jack/search.html', context, request=request)
-                return JsonResponse({'search_result_html': search_result_html}) 
+                return render(request, 'jack/search.html', context)
 
 
 def channel(request, channel_id):
     channel = get_object_or_404(Channel, channel_id=channel_id)
 
+    channel_list = Channel.objects.all()
     new_video_list = Video.get_new_video_list(5, channel_id)
     popular_video_list = Video.get_popular_video_list(5, channel_id)
+    search_form = SearchForm()
 
-    new_video_html = render_to_string('jack/component/video.html', 
-        {'title': '最新の動画', 'video_list': new_video_list}, request=request)
-    popular_video_html = render_to_string('jack/component/video.html', 
-        {'title': '人気の動画' , 'video_list': popular_video_list}, request=request)
-    header_html = f'<h2 class="header-title mt-4"><a class="text-reset" href="https://youtube.com/channel/{channel_id}/" target="_blank">{channel.channel_nm} <i class="fas fa-external-link-alt fa-xs"></i></a><hr/></h2>'
+    context = {
+        'channel_list': channel_list,
+        'header_title': channel.channel_nm,
+        'new_video_list': new_video_list,
+        'popular_video_list': popular_video_list,
+        'search_form': search_form
+    }
 
-    return JsonResponse({'new_video_html': new_video_html, 'popular_video_html': popular_video_html, 'header_html': header_html }) 
+    return render(request, 'jack/index.html', context)
 
 
 def video(request, video_id):
@@ -120,14 +128,15 @@ def video(request, video_id):
                     html = render_to_string('jack/component/comment.html', context, request=request)
                     return JsonResponse({'form': html}) 
 
+    channel_list = Channel.objects.all()
     comment_form = CommentForm()
+    search_form = SearchForm()
 
     context = {
+        'channel_list': channel_list,
         'comment_form': comment_form,
+        'search_form': search_form,
         'video': video
     }
     
-    video_player_html = render_to_string('jack/video.html', context, request=request)
-    header_html = f'<h2 class="header-title mb-3"><a class="text-reset" href="https://youtube.com/video/{video.video_id}/" target="_blank">{video.video_nm} <i class="fas fa-external-link-alt fa-xs"></i></a></h2>'
-
-    return JsonResponse({'video_player_html': video_player_html, 'header_html': header_html}) 
+    return render(request, 'jack/video.html', context)
