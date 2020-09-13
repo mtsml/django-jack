@@ -36,6 +36,10 @@ class Video(models.Model):
     def is_video_id_exists(video_id):
         return Video.objects.filter(video_id=video_id).exists()
 
+    # selected_relatedを動画リスト取得時に使えばこの処理は不要になるはず（N+1問題）
+    def get_channel_nm(self):
+        return Channel.objects.get(channel_id=self.channel_id).channel_nm
+
     # pythonではオーバーロードができなかったので必須でないchannel_idを引数に取る
     def get_new_video_list(cnt, channel_id):
         if channel_id:

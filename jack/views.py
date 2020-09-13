@@ -10,8 +10,8 @@ from .youtube import search_youtube
 
 def index(request):
     channel_list = Channel.objects.all()
-    new_video_list = Video.get_new_video_list(4, None)
-    popular_video_list = Video.get_popular_video_list(4, None)
+    new_video_list = Video.get_new_video_list(5, None)
+    popular_video_list = Video.get_popular_video_list(5, None)
     search_form = SearchForm()
 
     context = {
@@ -90,7 +90,7 @@ def channel(request, channel_id):
         {'title': '最新の動画', 'video_list': new_video_list}, request=request)
     popular_video_html = render_to_string('jack/component/video.html', 
         {'title': '人気の動画' , 'video_list': popular_video_list}, request=request)
-    header_html = f'<h2 class="header-title mt-4"><a class="text-reset" href="https://youtube.com/channel/{channel_id}/" target="_blank">{channel.channel_nm} <i class="fas fa-external-link-alt fa-xs"></i></a><hr/></h2>'
+    header_html = f'<h2 class="header-title mt-4 mb-3"><a class="text-reset" href="https://youtube.com/channel/{channel_id}/" target="_blank">{channel.channel_nm} <i class="fas fa-external-link-alt fa-xs"></i></a></h2>'
 
     return JsonResponse({'new_video_html': new_video_html, 'popular_video_html': popular_video_html, 'header_html': header_html }) 
 

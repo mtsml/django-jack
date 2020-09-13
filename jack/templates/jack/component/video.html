@@ -1,15 +1,43 @@
 <div class='video-list'>
-    <h3>{{ title }}</h3>
     <div class="row">
         {% for video in video_list %}
-            <div class="col-lg-3 mb-3">
-                <img class="rounded mx-auto d-block" src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}" >
-                <h6>
-                    <a class="video-link text-primary" href="{% url 'video' video.video_id %}">
-                        {{ video.video_nm }}
+            {% if forloop.first %}
+                <div class="col-md-7 mt-2 mb-md-3">
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" 
+                            src="https://www.youtube.com/embed/{{ video.video_id }}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>        
+                </div>
+                <div class="col-md-5 mt-2 mb-3">
+                    <h5>
+                        <a class="video-link text-reset" href="{% url 'video' video.video_id %}">
+                            {{ video.video_nm }}
+                        </a>
+                    </h5>
+                    <a class="channel-link text-reset" href="{% url 'channel' video.channel_id %}">
+                        <span class="text-muted">{{ video.get_channel_nm }}</span>
                     </a>
-                </h6>
-            </div>
+                </div>
+            {% endif %}
+            {% if not forloop.first %}
+                <div class="col-md-6 d-flex mb-3">
+                    <img class="rounded" src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}" >
+                    <span class="ml-2">
+                        <h6>
+                            <a class="video-link text-reset" href="{% url 'video' video.video_id %}">
+                                {{ video.video_nm }}
+                            </a>
+                        </h6>
+                        <a class="channel-link text-reset" href="{% url 'channel' video.channel_id %}">
+                            <small class="text-muted">{{ video.get_channel_nm }}</small>
+                        </a>
+                    </span>
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 </div>
