@@ -9,7 +9,7 @@
                     <input name="channel_id" type="hidden" value="{{ channel.channel_id }}">
                     <input name="channel_nm" type="hidden" value="{{ channel.channel_nm }}">
                     <input name="thumbnails_url" type="hidden" value="{{ channel.thumbnails_url }}">
-                    <button class="add-btn btn btn-light p-2" name='add_channel' type="submit"
+                    <button class="add-btn btn btn-sm my-0 btn-light z-depth-0" name='add_channel' type="submit"
                         {% if channel.registered %}disabled{% endif %}
                     >
                         <i class="fas fa-plus"></i>
@@ -39,7 +39,7 @@
                     <input name="video_id" type="hidden" value="{{ video.video_id }}">
                     <input name="video_nm" type="hidden" value="{{ video.video_nm }}">
                     <input name="thumbnails_url" type="hidden" value="{{ video.thumbnails_url }}">
-                    <button class="add-btn btn btn-light p-2" name='add_video' type="submit"
+                    <button class="add-btn btn btn-sm my-0 btn-light z-depth-0" name='add_video' type="submit"
                         {% if video.registered %}disabled{% endif %}
                     >
                         <i class="fas fa-plus"></i>
