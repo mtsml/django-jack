@@ -1,8 +1,8 @@
-<div class="comment-list">
-    <form class="comment-form d-flex" action="{% url category foreign_id %}" method="POST">
+<div class="comment-list mt-3 mt-md-0">
+    <form class="comment-form md-form d-flex mt-0 mb-2" action="{% url category foreign_id %}" method="POST">
         {% csrf_token %}
         {{ comment_form.comment }}
-        <button class="add-btn btn btn-sm my-0 btn-light z-depth-0" name="add_comment" type="submit">
+        <button class="add-btn btn btn-sm px-3 my-0 btn-light z-depth-0" name="add_comment" type="submit">
             <i class="fas fa-plus"></i>
         </button>
     </form>

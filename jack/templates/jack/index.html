@@ -1,8 +1,15 @@
 {% extends 'jack/base.html' %}
 {% block content %}
     <div class="mt-2">
-        <div class="header-title"></div>
-        <ul class="nav nav-tabs mb-2" role="tablist">
+        {% if header_title %}
+            <h2 class="mt-4 mb-3"
+                ><a class="text-reset" href="https://youtube.com/channel/{channel_id}/" target="_blank">
+                    {{ header_title }} 
+                    <i class="fas fa-external-link-alt fa-xs"></i>
+                </a>
+            </h2>
+        {% endif %}
+        <ul class="nav nav-tabs mt-4 mb-2" role="tablist">
             <li class="nav-item">
                 <a class="nav-link text-reset active" id="new-video-tab" data-toggle="tab" href="#new-video" role="tab" aria-controls="new-video" aria-selected="true">
                     最新動画
@@ -31,108 +38,4 @@
             </div>
         </div>
     </div>
-    <script>
-        $(document).on('click', '.channel-link', function(event) {
-            event.preventDefault();
-            var a = $(this);
-            $.ajax({
-                url: a.prop("href"),
-                timeout: 10000,
-                dataType: "text",
-            })
-            .done(function(data) {
-                var res = JSON.parse(data);
-                
-                // 動画画面から遷移時のための初期化処理
-                $('.video-player').remove();
-                $('.video-comment').remove();
-                $('.new-video-list').show();
-                $('.popular-video-list').show();
-                $('.search-channel-list').remove();
-                $('.search-video-list').remove();
-                
-                $('.header-title').replaceWith(res['header_html']);
-                $('.new-video-list').html(res['new_video_html']);
-                $('.popular-video-list').html(res['popular_video_html']);
-            })
-            .fail(function(data) {
-                alert("深刻なエラーが発生しました。。。");
-            })
-        });
-        $(document).on('click', '.video-link', function(event) {
-            event.preventDefault();
-            var a = $(this);
-            $.ajax({
-                url: a.prop("href"),
-                timeout: 10000,
-                dataType: "text",
-            })
-            .done(function(data) {
-                var res = JSON.parse(data);
-                $('.new-video-list').empty().hide();
-                $('.popular-video-list').empty().hide();
-                $('.header-title').replaceWith(res['header_html']);
-                $('.popular-video-list').after(res['video_player_html']);
-            })
-            .fail(function(data) {
-                alert("深刻なエラーが発生しました。。。");
-            })
-        });
-        $(document).on('submit', '.search-form', function(event) {
-            event.preventDefault();
-            var form = $(this);
-            var data = form.serialize()
-                + '&'
-                + encodeURI(form.find('.search-btn').prop('name'))
-                + '='
-                + encodeURI(form.find('.search-btn').prop('value'))
-            $.ajax({
-                url: form.prop("action"),
-                method: form.prop("method"),
-                data: data,
-                timeout: 10000,
-                dataType: "text",
-            })
-            .done(function(data) {
-                var res = JSON.parse(data);
-
-                // 画面遷移時の初期処理
-                $('.header-title').empty();
-                $('.video-player').remove();
-                $('.video-comment').remove();
-                $('.new-video-list').empty().hide();
-                $('.popular-video-list').empty().hide();
-                $('.search-channel-list').remove();
-                $('.search-video-list').remove();
-
-                $('.popular-video-list').after(res['search_result_html']);
-            })
-            .fail(function(data) {
-                alert("深刻なエラーが発生しました。。。");
-            })
-        });
-        $(document).on("submit", ".add-form", function(event) {
-            event.preventDefault();
-            var form = $(this);
-            var data = form.serialize()
-                + '&'
-                + encodeURI(form.find('.add-btn').prop('name'))
-                + '='
-                + encodeURI(form.find('.add-btn').prop('value'))
-            $.ajax({
-                url: form.prop("action"),
-                method: form.prop("method"),
-                data: data,
-                timeout: 10000,
-                dataType: "text",
-            })
-            .done(function(data) {
-                var res = JSON.parse(data)
-                form.children('.add-btn').prop('disabled', true);                    
-            })
-            .fail(function(data) {
-                alert("深刻なエラーが発生しました。。。");
-            })
-        });
-    </script>
 {% endblock %}
