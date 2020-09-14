@@ -13,7 +13,7 @@
             </strong>
         </a>
     </div>
-    <form class="search-form md-form d-none d-md-flex ml-3 my-2" action="{% url 'search' %}" method="POST">
+    <form class="search-form d-none d-md-flex ml-3 my-2" action="{% url 'search' %}" method="POST">
         {% csrf_token %}
         {{ search_form.query }}
         <button class="search-btn btn btn-sm px-3 my-0 btn-light z-depth-0" name='search' type="submit">
