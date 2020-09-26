@@ -93,8 +93,8 @@ def channel(request, channel_id):
     search_form = SearchForm()
 
     context = {
+        'channel': channel,
         'channel_list': channel_list,
-        'header_title': channel.channel_nm,
         'new_video_list': new_video_list,
         'popular_video_list': popular_video_list,
         'search_form': search_form

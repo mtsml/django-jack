@@ -1,10 +1,10 @@
 {% extends 'jack/base.html' %}
 {% block content %}
     <div class="mt-2">
-        {% if header_title %}
+        {% if channel %}
             <h2 class="mt-4 mb-3">
-                <a class="text-reset" href="https://youtube.com/channel/{channel_id}/" target="_blank">
-                    {{ header_title }} 
+                <a class="text-reset" href="https://youtube.com/channel/{{ channel.channel_id }}/" target="_blank">
+                    {{ channel.channel_nm }} 
                     <i class="fas fa-external-link-alt fa-xs"></i>
                 </a>
             </h2>
