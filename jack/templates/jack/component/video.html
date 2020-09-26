@@ -25,7 +25,9 @@
             {% endif %}
             {% if not forloop.first %}
                 <div class="col-md-6 d-flex mb-3">
-                    <img class="rounded" src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}" >
+                    <a class="channel-link text-reset" href="{% url 'channel' video.channel_id %}">
+                        <img class="rounded" src="{{ video.thumbnails_url }}" alt="{{ video.video_nm }}">
+                    </a>
                     <span class="ml-2">
                         <h6>
                             <a class="video-link text-reset" href="{% url 'video' video.video_id %}">
