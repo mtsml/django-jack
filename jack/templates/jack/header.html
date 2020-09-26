@@ -20,7 +20,7 @@
             <i class="fas fa-search"></i>
         </button>
     </form>    
-    <div id="sidebarMenu" class="collapse navbar-collapse">
+    <div id="sidebarMenu" class="collapse navbar-collapse mb-3">
         <form class="search-form form-inline d-flex d-md-none ml-3" action="{% url 'search' %}" method="POST">
             {% csrf_token %}
             {{ search_form.query }}
