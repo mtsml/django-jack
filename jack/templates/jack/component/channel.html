@@ -1,4 +1,4 @@
-<ul class="navbar-nav ml-3 mr-auto overflow-auto vh-100">
+<ul class="navbar-nav ml-3 mr-auto overflow-auto" style="max-height: 50vh;">
     {% for channel in channel_list %}
     <li class="nav-item">
         <a class='channel-link nav-link' href="{% url 'channel' channel.channel_id %}">
